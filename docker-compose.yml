@@ -1,0 +1,45 @@
+version: '3.1'
+services:
+  client:
+    container_name: client
+    image: client
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - server
+    networks:
+      - extricator-network
+
+  server:
+    container_name: server
+    image: server
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=development
+    ports:
+      - "3000:3000"
+    networks:
+      - extricator-network
+
+  cadvisor:
+    container_name: cadvisor
+    image: google/cadvisor
+    volumes:
+    - /:/rootfs:ro
+    - /var/run:/var/run:rw
+    - /sys:/sys:ro
+    - /var/lib/docker/:/var/lib/docker:ro
+    ports:
+    - "8080:8080"
+    networks:
+    - extricator-network
+
+networks:
+  extricator-network:
+    driver: bridge
