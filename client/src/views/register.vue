@@ -93,13 +93,18 @@ export default defineComponent({
     };
     const submit = () => {
       formRef.value.validate().then(() => {
-        axios.post('api/auth/signup', toRaw(formState)).then((resp) => {
-          if (resp.data) {
-            message.success('注册成功');
-          } else {
+        axios
+          .post('api/auth/signup', toRaw(formState))
+          .then((resp) => {
+            if (resp.data) {
+              message.success('注册成功');
+            } else {
+              message.error('注册失败');
+            }
+          })
+          .catch(() => {
             message.error('注册失败');
-          }
-        });
+          });
       });
     };
     return {

@@ -37,7 +37,7 @@
 <script lang="ts">
 import { defineComponent, reactive, ref, toRaw, UnwrapRef } from 'vue';
 import { message } from 'ant-design-vue';
-import axios from 'axios';
+import axios from '../utils/http';
 
 interface FormState {
   code: string,
