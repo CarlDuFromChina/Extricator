@@ -6,7 +6,7 @@
           <span class="header">Extricator</span>
         </a-form-item>
         <a-form-item>
-          <span class="desc">{{ 'Don\'t have too many psychological burden!' }}</span>
+          <span class="desc">{{ "Don't have too many psychological burden!" }}</span>
         </a-form-item>
         <a-form-item name="code">
           <a-input v-model:value="formState.code" placeholder="用户名" allowClear>
@@ -38,48 +38,51 @@
 import { defineComponent, reactive, ref, toRaw, UnwrapRef } from 'vue';
 import { message } from 'ant-design-vue';
 import axios from '../utils/http';
+import store from '../store';
+import { useRouter } from 'vue-router';
 
 interface FormState {
-  code: string,
-  password: string
+  code: string;
+  password: string;
 }
 
 export default defineComponent({
   setup() {
+    const router = useRouter();
     const formRef = ref();
     const formState: UnwrapRef<FormState> = reactive({
       code: '',
-      password: ''
+      password: '',
     });
     const rules = {
       code: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
-      password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
+      password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
     };
     const signIn = () => {
-      formRef.value
-        .validate()
-        .then(() => {
-          axios.post('api/auth/login', toRaw(formState)).then(resp => {
-            if (resp.data) {
-              message.success('登录成功');
-            } else {
-              message.error('账号或密码错误');
-            }
-          });
+      formRef.value.validate().then(() => {
+        axios.post('api/auth/login', toRaw(formState)).then((resp) => {
+          if (resp.data) {
+            message.success('登录成功');
+            store.commit('setToken', resp.data);
+            router.push('admin');
+          } else {
+            message.error('账号或密码错误');
+          }
         });
-    }
+      });
+    };
     return {
       formRef,
       formState,
       rules,
-      signIn
+      signIn,
     };
   },
   data() {
     return {
-      loading: false
+      loading: false,
     };
-  }
+  },
 });
 </script>
 

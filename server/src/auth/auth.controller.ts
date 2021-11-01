@@ -8,7 +8,6 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('login')
-  @UseGuards(AuthGuard('local'))
   login(@Request() request) {
     return this.authService.login(request.user);
   }

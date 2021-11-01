@@ -57,6 +57,7 @@ import { defineComponent, reactive, ref, toRaw, UnwrapRef } from 'vue';
 import { SmileTwoTone } from '@ant-design/icons-vue';
 import axios from 'axios';
 import { message } from 'ant-design-vue';
+import { useRouter } from 'vue-router';
 
 interface FormState {
   code: string;
@@ -70,6 +71,7 @@ interface FormState {
 export default defineComponent({
   setup() {
     const formRef = ref();
+    const router = useRouter();
     const formState: UnwrapRef<FormState> = reactive({
       code: '',
       password: '',
@@ -98,6 +100,7 @@ export default defineComponent({
           .then((resp) => {
             if (resp.data) {
               message.success('注册成功');
+              router.push('login');
             } else {
               message.error('注册失败');
             }
