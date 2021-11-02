@@ -50,6 +50,7 @@ export default defineComponent({
   setup() {
     const router = useRouter();
     const formRef = ref();
+    const loading = ref(false);
     const formState: UnwrapRef<FormState> = reactive({
       code: '',
       password: '',
@@ -76,11 +77,7 @@ export default defineComponent({
       formState,
       rules,
       signIn,
-    };
-  },
-  data() {
-    return {
-      loading: false,
+      loading
     };
   },
 });
