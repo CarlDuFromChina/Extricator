@@ -65,6 +65,7 @@ export default defineComponent({
           if (resp.data) {
             message.success('登录成功');
             store.commit('setToken', resp.data);
+            store.commit('setCurrentUser', formState.code);
             router.push('admin');
           } else {
             message.error('账号或密码错误');
