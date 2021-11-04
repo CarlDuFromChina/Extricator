@@ -19,7 +19,7 @@ export class UserController {
     return this.userService.createData(createUserDto);
   }
 
-  @Get()
+  @Get(':code')
   @UseGuards(AuthGuard('jwt'))
   findOne(@Param('code') code: string) {
     return this.userService.getData(code);

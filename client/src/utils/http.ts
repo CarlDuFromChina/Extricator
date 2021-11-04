@@ -2,6 +2,7 @@ import Axios from 'axios';
 import store from '../store';
 
 const axios = Axios.create({
+  baseURL: 'http://localhost:5000',
   timeout: 5000,
 });
 

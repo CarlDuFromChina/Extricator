@@ -70,6 +70,9 @@ export default defineComponent({
           } else {
             message.error('账号或密码错误');
           }
+        })
+        .catch(err => {
+          message.error(err.response.data.message);
         });
       });
     };

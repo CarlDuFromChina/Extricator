@@ -20,6 +20,7 @@ export default {
   position: absolute;
   width: 100%;
   top: 200px;
+  text-align: center;
 }
 
 h2 {
