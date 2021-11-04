@@ -3,33 +3,47 @@
     <a-layout-sider v-model:collapsed="collapsed" :trigger="null" collapsible>
       <div class="logo" />
       <a-menu v-model:selectedKeys="selectedKeys" theme="dark" mode="inline">
-        <a-menu-item key="1" @click="$router.push({ name: 'juejin' })">
+        <a-menu-item key="1" @click="menuChange('juejin')">
           <GlobalOutlined />
           <span>掘金</span>
         </a-menu-item>
-        <a-menu-item key="2" @click="$router.push({ name: 'jd' })">
+        <a-menu-item key="2" @click="menuChange('jd')">
           <GlobalOutlined />
           <span>京东</span>
         </a-menu-item>
-        <a-menu-item key="3" @click="$router.push({ name: 'setting' })">
+        <a-menu-item key="3" @click="menuChange('setting')">
           <SettingOutlined />
           <span>设置</span>
         </a-menu-item>
       </a-menu>
     </a-layout-sider>
     <a-layout>
-      <a-layout-header style="background: #fff; padding: 0">
+      <a-layout-header :style="{ background: '#fff', padding: 0, position: 'relative' }">
         <menu-unfold-outlined
           v-if="collapsed"
           class="trigger"
           @click="() => (collapsed = !collapsed)"
         />
         <menu-fold-outlined v-else class="trigger" @click="() => (collapsed = !collapsed)" />
+        <a-dropdown>
+          <a-avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" shape="circle" :style="{ position: 'absolute', top: '20%', right: '20px', cursor: 'pointer' }"/>
+          <template #overlay>
+            <a-menu>
+              <a-menu-item key="1" @click="() => null"><EditOutlined />修改密码</a-menu-item>
+              <a-menu-item key="3" @click="logout"><LogoutOutlined />退出</a-menu-item>
+            </a-menu>
+          </template>
+        </a-dropdown>
       </a-layout-header>
       <a-layout-content
-        :style="{ margin: '24px 16px', padding: '24px', background: '#fff', minHeight: '280px' }"
+        :style="{ margin: '24px 16px', background: '#fff', minHeight: '280px' }"
       >
-        <router-view></router-view>
+        <a-page-header
+          style="border-bottom: 1px solid rgb(235, 237, 240)"
+          :title="title"
+          :sub-title="subTitle"
+        />
+        <router-view :style="{ padding: '24px' }"></router-view>
       </a-layout-content>
     </a-layout>
   </a-layout>
@@ -39,20 +53,48 @@ import {
   SettingOutlined,
   MenuUnfoldOutlined,
   MenuFoldOutlined,
-  GlobalOutlined
+  GlobalOutlined,
+  LogoutOutlined,
+  EditOutlined
 } from '@ant-design/icons-vue';
 import { defineComponent, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { RouteMeta } from '../router';
+import store from '../store';
+
 export default defineComponent({
   components: {
     SettingOutlined,
     MenuUnfoldOutlined,
     MenuFoldOutlined,
-    GlobalOutlined
+    GlobalOutlined,
+    LogoutOutlined,
+    EditOutlined
   },
   setup() {
+    const router = useRouter();
+    var title = ref<string>('');
+    var subTitle = ref<string>('');
+    const setMeta = () => {
+      var meta = router.currentRoute.value.meta as unknown as RouteMeta;
+      title.value = meta.title;
+      subTitle.value = meta.subTitle;
+    }
+    const menuChange = (name: string) => {
+      router.push({ name }).then(() => setMeta());
+    };
+    const logout = () => {
+      store.commit('logout');
+      router.push({ name: 'login' });
+    }
+    setMeta();
     return {
       selectedKeys: ref<string[]>(['1']),
       collapsed: ref<boolean>(false),
+      title,
+      subTitle,
+      menuChange,
+      logout
     };
   },
 });
