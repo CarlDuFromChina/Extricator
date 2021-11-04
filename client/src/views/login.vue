@@ -40,6 +40,7 @@ import { message } from 'ant-design-vue';
 import axios from '../utils/http';
 import store from '../store';
 import { useRouter } from 'vue-router';
+import assert from '../utils/assert';
 
 interface FormState {
   code: string;
@@ -61,8 +62,8 @@ export default defineComponent({
     };
     const signIn = () => {
       formRef.value.validate().then(() => {
-        axios.post('api/auth/login', toRaw(formState)).then((resp) => {
-          if (resp.data) {
+        axios.post('/api/auth/login', toRaw(formState)).then((resp) => {
+          if (!assert.isEmpty(resp.data)) {
             message.success('登录成功');
             store.commit('setToken', resp.data);
             store.commit('setCurrentUser', formState.code);

@@ -35,7 +35,7 @@ export default defineComponent({
     });
     var data:any = {};
     const code = store.getters.userCode;
-    axios.get(`api/user/${code}`).then((resp) => {
+    axios.get(`/api/user/${code}`).then((resp) => {
       if (resp.data) {
         Object.assign(formSetting, resp.data.cookie)
         data = resp.data;
