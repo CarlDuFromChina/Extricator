@@ -35,10 +35,10 @@ export default defineComponent({
     });
     var data:any = {};
     const code = store.getters.userCode;
-    axios.get(`/api/user/${code}`).then((resp) => {
-      if (resp.data) {
-        Object.assign(formSetting, resp.data.cookie)
-        data = resp.data;
+    axios.get(`/api/user/${code}`).then((resp: any) => {
+      if (resp) {
+        Object.assign(formSetting, resp.cookie)
+        data = resp;
       } else {
         message.error('获取用户设置失败');
       }
@@ -49,14 +49,14 @@ export default defineComponent({
         axios
           .put('/api/user', data)
           .then((resp) => {
-            if (resp.data) {
+            if (resp) {
               message.success('修改成功');
             } else {
               message.error('修改失败');
             }
           })
-          .catch(() => {
-            message.error('修改失败');
+          .catch(err => {
+            message.error(err);
           });
       });
     };

@@ -98,7 +98,7 @@ export default defineComponent({
         axios
           .post('api/auth/signup', toRaw(formState))
           .then((resp) => {
-            if (resp.data) {
+            if (resp) {
               message.success('注册成功');
               router.push('login');
             } else {

@@ -63,9 +63,9 @@ export default defineComponent({
     const signIn = () => {
       formRef.value.validate().then(() => {
         axios.post('/api/auth/login', toRaw(formState)).then((resp) => {
-          if (!assert.isEmpty(resp.data)) {
+          if (!assert.isEmpty(resp)) {
             message.success('登录成功');
-            store.commit('setToken', resp.data);
+            store.commit('setToken', resp);
             store.commit('setCurrentUser', formState.code);
             router.push('admin');
           } else {
@@ -73,7 +73,7 @@ export default defineComponent({
           }
         })
         .catch(err => {
-          message.error(err.response.data.message);
+          message.error(err);
         });
       });
     };
