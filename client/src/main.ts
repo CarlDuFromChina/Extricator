@@ -7,6 +7,7 @@ import { MessageApi } from 'ant-design-vue/lib/message';
 import axios from './utils/http';
 import { AxiosInstance } from 'axios';
 import store from './store';
+import components from './components';
 
 const router = createRouter();
 const app = createApp(App);
@@ -22,6 +23,7 @@ declare module '@vue/runtime-core' {
 app.use(router);
 app.use(Antd);
 app.use(store);
+app.use(components);
 
 app.config.globalProperties.$message = message;
 app.config.globalProperties.$http = axios;

@@ -36,14 +36,9 @@
         </a-dropdown>
       </a-layout-header>
       <a-layout-content
-        :style="{ margin: '24px 16px', background: '#fff', minHeight: '280px' }"
+        :style="{ margin: '24px 16px', background: '#fff', height: '100%' }"
       >
-        <a-page-header
-          style="border-bottom: 1px solid rgb(235, 237, 240)"
-          :title="title"
-          :sub-title="subTitle"
-        />
-        <router-view :style="{ padding: '24px' }"></router-view>
+        <router-view></router-view>
       </a-layout-content>
     </a-layout>
   </a-layout>
@@ -59,7 +54,6 @@ import {
 } from '@ant-design/icons-vue';
 import { defineComponent, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { RouteMeta } from '../router';
 import store from '../store';
 
 export default defineComponent({
@@ -73,26 +67,16 @@ export default defineComponent({
   },
   setup() {
     const router = useRouter();
-    var title = ref<string>('');
-    var subTitle = ref<string>('');
-    const setMeta = () => {
-      var meta = router.currentRoute.value.meta as unknown as RouteMeta;
-      title.value = meta.title;
-      subTitle.value = meta.subTitle;
-    }
     const menuChange = (name: string) => {
-      router.push({ name }).then(() => setMeta());
+      router.push({ name });
     };
     const logout = () => {
       store.commit('logout');
       router.push({ name: 'login' });
     }
-    setMeta();
     return {
       selectedKeys: ref<string[]>(['1']),
       collapsed: ref<boolean>(false),
-      title,
-      subTitle,
       menuChange,
       logout
     };

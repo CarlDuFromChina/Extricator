@@ -1,15 +1,17 @@
 <template>
-  <a-form ref="formRef" :model="formSetting">
-    <a-form-item label="掘金">
-      <a-input v-model:value="formSetting.juejin"></a-input>
-    </a-form-item>
-    <a-form-item label="京东">
-      <a-input v-model:value="formSetting.jd"></a-input>
-    </a-form-item>
-    <a-form-item>
-      <a-button type="primary" @click="submit">提交</a-button>
-    </a-form-item>
-  </a-form>
+  <sp-view>
+    <a-form ref="formRef" :model="formSetting">
+      <a-form-item label="掘金">
+        <a-input v-model:value="formSetting.juejin"></a-input>
+      </a-form-item>
+      <a-form-item label="京东">
+        <a-input v-model:value="formSetting.jd"></a-input>
+      </a-form-item>
+      <a-form-item>
+        <a-button type="primary" @click="submit">提交</a-button>
+      </a-form-item>
+    </a-form>
+  </sp-view>
 </template>
 
 <script lang="ts">
@@ -21,8 +23,8 @@ import { useRouter } from 'vue-router';
 import { defineComponent } from '@vue/runtime-core';
 
 interface FormSetting {
-  juejin: string,
-  jd: string,
+  juejin: string;
+  jd: string;
 }
 
 export default defineComponent({
@@ -31,13 +33,13 @@ export default defineComponent({
     const router = useRouter();
     var formSetting: UnwrapRef<FormSetting> = reactive({
       juejin: '123',
-      jd: ''
+      jd: '',
     });
-    var data:any = {};
+    var data: any = {};
     const code = store.getters.userCode;
     axios.get(`/api/user/${code}`).then((resp: any) => {
       if (resp) {
-        Object.assign(formSetting, resp.cookie)
+        Object.assign(formSetting, resp.cookie);
         data = resp;
       } else {
         message.error('获取用户设置失败');
@@ -55,7 +57,7 @@ export default defineComponent({
               message.error('修改失败');
             }
           })
-          .catch(err => {
+          .catch((err) => {
             message.error(err);
           });
       });
