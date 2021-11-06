@@ -1,9 +1,10 @@
 import assert from '../utils/assert';
 import View from './view.vue';
 import Header from './header.vue';
+import Body from './body.vue';
 
 const prefix = 'sp';
-const components = [View, Header];
+const components = [View, Header, Body];
 
 export default {
   install: (app: any, options: any) => {

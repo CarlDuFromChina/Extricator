@@ -1,16 +1,19 @@
 <template>
   <sp-view>
-    <a-form ref="formRef" :model="formSetting">
-      <a-form-item label="掘金">
-        <a-input v-model:value="formSetting.juejin"></a-input>
-      </a-form-item>
-      <a-form-item label="京东">
-        <a-input v-model:value="formSetting.jd"></a-input>
-      </a-form-item>
-      <a-form-item>
-        <a-button type="primary" @click="submit">提交</a-button>
-      </a-form-item>
-    </a-form>
+    <sp-header></sp-header>
+    <sp-body>
+      <a-form ref="formRef" :model="formSetting">
+        <a-form-item label="掘金">
+          <a-input v-model:value="formSetting.juejin"></a-input>
+        </a-form-item>
+        <a-form-item label="京东">
+          <a-input v-model:value="formSetting.jd"></a-input>
+        </a-form-item>
+        <a-form-item>
+          <a-button type="primary" @click="submit">提交</a-button>
+        </a-form-item>
+      </a-form>
+    </sp-body>
   </sp-view>
 </template>
 

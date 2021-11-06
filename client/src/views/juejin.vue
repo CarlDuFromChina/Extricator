@@ -1,43 +1,77 @@
 <template>
-  <sp-view :padding="'0px'">
+  <sp-view>
     <sp-header></sp-header>
-    <a-tabs v-model:activeKey="activeKey">
-      <a-tab-pane key="1">
-        <template #tab>
-          <span>
-            签到
-          </span>
+    <sp-body>
+      <a-button type="primary" style="margin-right: 12px" @click="draw">抽奖</a-button>
+      <a-button type="primary" @click="allin">ALL IN</a-button>
+      <a-calendar v-model:value="value">
+        <template #dateCellRender="{ current }">
+          <a-button v-if="isToday(current) && !isChecked" type="primary" :size="size" @click="checkin">签到</a-button>
         </template>
-        <a-calendar v-model:value="value" @panelChange="onPanelChange" />
-      </a-tab-pane>
-      <a-tab-pane key="2">
-        <template #tab>
-          <span>
-            抽奖
-          </span>
-        </template>
-        <a-empty />
-      </a-tab-pane>
-    </a-tabs>
+      </a-calendar>
+    </sp-body>
   </sp-view>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { Dayjs } from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
+import http from '../utils/http';
+import { message } from 'ant-design-vue';
 
 export default defineComponent({
   setup() {
     const value = ref<Dayjs>();
-    const onPanelChange = (value: Dayjs, mode: string) => {
-      console.log(value, mode);
+    const isToday = (value: Dayjs) => {
+      return value.format('YYYY-MM-DD') === dayjs(new Date()).format('YYYY-MM-DD');
     };
 
+    var size = ref('large');
+    var isChecked = ref(false);
+
+    var checkin = () => {
+      http.post('/api/juejin/checkin').then(() => {
+        message.success('签到成功');
+        isChecked.value = true;
+      });
+    };
+
+    var draw = () => {
+      http.post('/api/juejin/draw?count=1').then(resp => {
+        var result = resp as Array<string>;
+        message.info(result[0]);
+      }).catch(err => {
+        message.error(err);
+      });
+    };
+
+    var allin = () => {
+      http.post('api/juejin/allin').then(resp => {
+        message.success(resp as string)
+      }).catch(err => {
+        message.error(err);
+      })
+    };
+
+    http.get('/api/juejin/getTodayStatus').then(res => {
+      isChecked.value = res as boolean;
+    });
+
     return {
-      activeKey: ref('1'),
+      isChecked,
+      size,
       value,
-      onPanelChange,
+      isToday,
+      checkin,
+      draw,
+      allin
     };
   },
 });
 </script>
+
+<style lang="less" scoped>
+:deep(.ant-fullcalendar-fullscreen .ant-fullcalendar-content) {
+  text-align: center;
+}
+</style>
