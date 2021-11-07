@@ -11,6 +11,11 @@ export class UserService {
     return result;
   }
 
+  async getAllData(): Promise<Array<User>> {
+    var result = await this.reporsitory.getAllData();
+    return result;
+  }
+
   async createData(user: User): Promise<boolean> {
     if (!user.code || !user.password) {
       throw new HttpException('注册失败', 500);
