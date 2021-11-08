@@ -1,29 +1,31 @@
-version: '3.1'
+version: '2'
 services:
   client:
-    container_name: client
-    image: client
+    container_name: "client"
+    image: extricator-ui:latest
     build:
       context: ./client
       dockerfile: Dockerfile
     ports:
       - "80:80"
       - "443:443"
+    links:
+      - server
     depends_on:
       - server
     networks:
       - extricator-network
 
   server:
-    container_name: server
-    image: server
+    container_name: "server"
+    image: extricator-server:latest
     build:
       context: ./server
       dockerfile: Dockerfile
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=production
     ports:
-      - "3000:3000"
+      - "5000:5000"
     networks:
       - extricator-network
 

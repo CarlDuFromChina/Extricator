@@ -59,9 +59,6 @@ export default defineComponent({
             } else {
               message.error('修改失败');
             }
-          })
-          .catch((err) => {
-            message.error(err);
           });
       });
     };

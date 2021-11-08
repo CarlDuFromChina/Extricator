@@ -104,9 +104,6 @@ export default defineComponent({
             } else {
               message.error('注册失败');
             }
-          })
-          .catch(() => {
-            message.error('注册失败');
           });
       });
     };

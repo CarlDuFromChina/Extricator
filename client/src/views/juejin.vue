@@ -40,22 +40,18 @@ export default defineComponent({
       http.post('/api/juejin/draw?count=1').then(resp => {
         var result = resp as Array<string>;
         message.info(result[0]);
-      }).catch(err => {
-        message.error(err);
       });
     };
 
     var allin = () => {
       http.post('api/juejin/allin').then(resp => {
         message.success(resp as string)
-      }).catch(err => {
-        message.error(err);
       })
     };
 
     http.get('/api/juejin/getTodayStatus').then(res => {
       isChecked.value = res as boolean;
-    });
+    })
 
     return {
       isChecked,

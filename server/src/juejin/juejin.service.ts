@@ -23,6 +23,13 @@ export class JuejinService {
     };
   }
 
+  private handleReponse<T>(res: JuejinResponse<T>) {
+    if (res.err_no.toString() !== '0') {
+      throw new InternalServerErrorException(res.err_msg);
+    }
+    return res.data;
+  }
+
   /**
    * 获取当前剩余矿石
    * @param code 用户编号
@@ -31,11 +38,7 @@ export class JuejinService {
   async getCurPoint(code: string): Promise<number> {
     const config = await this.getConfig(code);
     const res = await this.httpService.get('growth_api/v1/get_cur_point', config).toPromise();
-    var result = res.data as JuejinResponse<number>;
-    if (result.err_no !== 0) {
-      throw new InternalServerErrorException(result.err_msg);
-    }
-    return result.data;
+    return this.handleReponse(res.data as JuejinResponse<number>);
   }
 
   /**
@@ -46,11 +49,7 @@ export class JuejinService {
   async getTodayStatus(code: string): Promise<boolean> {
     const config = await this.getConfig(code);
     const res = await this.httpService.get('growth_api/v1/get_today_status', config).toPromise();
-    const result = res.data as JuejinResponse<boolean>;
-    if (result.err_no !== 0) {
-      throw new InternalServerErrorException(result.err_msg);
-    }
-    return result.data;
+    return this.handleReponse(res.data as JuejinResponse<boolean>);
   }
 
   /**
@@ -60,8 +59,8 @@ export class JuejinService {
    */
   async getCheckinCounts(code: string) {
     const config = await this.getConfig(code);
-    const result = await this.httpService.get('growth_api/v1/get_counts', config).toPromise();
-    return result.data as JuejinResponse<CheckinCounts>;
+    const res = await this.httpService.get('growth_api/v1/get_counts', config).toPromise();
+    return this.handleReponse(res.data as JuejinResponse<CheckinCounts>);
   }
 
   /**
@@ -72,7 +71,7 @@ export class JuejinService {
   async checkin(code: string) {
     const config = await this.getConfig(code);
     const result = await this.httpService.post('growth_api/v1/check_in', null, config).toPromise();
-    return result.data as JuejinResponse<CheckInData>;
+    return this.handleReponse(result.data as JuejinResponse<CheckInData>);
   }
 
   /**

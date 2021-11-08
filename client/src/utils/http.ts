@@ -1,3 +1,4 @@
+import { message } from 'ant-design-vue';
 import Axios from 'axios';
 import store from '../store';
 import assert from './assert';
@@ -72,36 +73,56 @@ axios.interceptors.request.use(
 );
 
 export default {
-  get: (url: string, config?: any) => {
+  get: (url: string, config?: any, customHandleError?: boolean) => {
     return new Promise((resolve, reject) => {
       axios
         .get(url, config)
         .then(res => resolve(_handleSuccess(res)))
-        .catch(err => reject(_handleError(err)));
+        .catch(err => {
+          if (!customHandleError) {
+            message.error(_handleError(err));
+          }
+          return reject(_handleError(err));
+        });
     });
   },
-  post: (url: string, data?: any, config?: any) => {
+  post: (url: string, data?: any, config?: any, customHandleError?: boolean) => {
     return new Promise((resolve, reject) => {
       axios
         .post(url, data, config)
         .then(res => resolve(_handleSuccess(res)))
-        .catch(err => reject(_handleError(err)));
+        .catch(err => {
+          if (!customHandleError) {
+            message.error(_handleError(err));
+          }
+          return reject(_handleError(err));
+        });
     });
   },
-  delete: (url: string, config?: any) => {
+  delete: (url: string, config?: any, customHandleError?: boolean) => {
     return new Promise((resolve, reject) => {
       axios
         .delete(url, config)
         .then(res => resolve(_handleSuccess(res)))
-        .catch(err => reject(_handleError(err)));
+        .catch(err => {
+          if (!customHandleError) {
+            message.error(_handleError(err));
+          }
+          return reject(_handleError(err));
+        });
     });
   },
-  put: (url: string, data?: any, config?: any) => {
+  put: (url: string, data?: any, config?: any, customHandleError?: boolean) => {
     return new Promise((resolve, reject) => {
       axios
         .put(url, data, config)
         .then(res => resolve(_handleSuccess(res)))
-        .catch(err => reject(_handleError(err)));
+        .catch(err => {
+          if (!customHandleError) {
+            message.error(_handleError(err));
+          }
+          return reject(_handleError(err));
+        });
     });
   }
 }
