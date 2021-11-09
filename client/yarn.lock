@@ -1181,6 +1181,11 @@ vscode-vue-languageservice@^0.27.0:
     vscode-pug-languageservice "^0.27.24"
     vscode-typescript-languageservice "^0.27.25"
 
+vue-request@^1.2.3:
+  version "1.2.3"
+  resolved "https://registry.npmmirror.com/vue-request/download/vue-request-1.2.3.tgz#bac6280bd0ee5d627916c16d522d9ef4fc1d205a"
+  integrity sha1-usYoC9DuXWJ5FsFtUi2e9PwdIFo=
+
 vue-router@4.0.12:
   version "4.0.12"
   resolved "https://registry.npmmirror.com/vue-router/download/vue-router-4.0.12.tgz?cache=0&sync_timestamp=1635262518681&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2Fvue-router%2Fdownload%2Fvue-router-4.0.12.tgz#8dc792cddf5bb1abcc3908f9064136de7e13c460"

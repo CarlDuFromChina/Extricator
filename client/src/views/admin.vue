@@ -11,7 +11,11 @@
           <GlobalOutlined />
           <span>京东</span>
         </a-menu-item>
-        <a-menu-item key="3" @click="menuChange('setting')">
+        <a-menu-item key="3" @click="menuChange('checkin')">
+          <GlobalOutlined />
+          <span>签到记录</span>
+        </a-menu-item>
+        <a-menu-item key="4" @click="menuChange('setting')">
           <SettingOutlined />
           <span>设置</span>
         </a-menu-item>

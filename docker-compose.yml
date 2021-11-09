@@ -16,6 +16,25 @@ services:
     networks:
       - extricator-network
 
+  pgdb:
+    image: postgres:12
+    container_name: "pgdb"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+    restart: always
+    ports:
+      - "127.0.0.1:5432:5432"
+    environment:
+      POSTGRES_DB: extrictor
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123123
+    volumes:
+      - /home/server/pg_data:/var/lib/postgresql/data
+    networks:
+      - extricator-network
+
   server:
     container_name: "server"
     image: extricator-server:latest

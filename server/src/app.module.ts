@@ -9,6 +9,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { TaskModule } from './task/task.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CookieModule } from './cookie/cookie.module';
+import { CheckinRecordModule } from './checkin-record/checkin-record.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { CookieModule } from './cookie/cookie.module';
       autoLoadEntities: true
     }),
     CookieModule,
+    CheckinRecordModule,
   ],
   controllers: [AppController],
   providers: [AppService],

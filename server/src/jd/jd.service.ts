@@ -3,10 +3,18 @@ import { Injectable } from "@nestjs/common";
 import { CheckInData } from "./interfaces/checkin-data.interface";
 import { UserService } from "src/user/user.service";
 import { JdResponse } from "./interfaces/jd-response.interface";
+import { CheckinRecord } from "src/checkin-record/checkin-record.entity";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
 
 @Injectable()
 export class JdService {
-  constructor(private httpService: HttpService, private userService: UserService) {}
+  constructor(
+    private httpService: HttpService,
+    private userService: UserService,
+    @InjectRepository(CheckinRecord)
+    private checkinRecordRepository: Repository<CheckinRecord>
+  ) {}
 
   /**
    * 获取京东请求头
@@ -28,9 +36,15 @@ export class JdService {
    */
   async checkin(code: string) : Promise<JdResponse<CheckInData>> {
     const config = await this.getConfig(code);
-    return this.httpService.post('client.action?functionId=signBeanIndex&appid=ld', null, config).toPromise().then(resp => {
-      var result = resp.data as JdResponse<CheckInData>;
-      return result;
-    });
+    var resp = await this.httpService.post('client.action?functionId=signBeanIndex&appid=ld', null, config).toPromise();
+    var result = resp.data as JdResponse<CheckInData>;
+    var jdRecord = new CheckinRecord();
+    jdRecord.created_at = new Date();
+    jdRecord.platform = 'jd';
+    jdRecord.platform_name = '京东';
+    jdRecord.user_code = code;
+    jdRecord.status = result.code === '0';
+    this.checkinRecordRepository.save(jdRecord);
+    return result;
   }
 }
