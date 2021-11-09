@@ -7,11 +7,11 @@ import { UserService } from 'src/user/user.service';
 export class AuthService {
   constructor(private userService: UserService, private jwtService: JwtService) {}
 
-  signup(user: User): Promise<boolean> {
+  signup(user: User): Promise<void> {
     return this.userService.createData(user);
   }
 
-  updateUser(user: User): Promise<boolean> {
+  updateUser(user: User): Promise<void> {
     return this.userService.updateData(user);
   }
 

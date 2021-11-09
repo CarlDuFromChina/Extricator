@@ -1,7 +1,7 @@
-import { User } from "src/user/user.entity";
+import { Cookie } from "src/cookie/cookie.entity";
 
-export class RegisterDto implements User{
+export class RegisterDto {
   code: string;
   password: string;
-  cookie: { jd: string; juejin: string; };
+  cookie: Cookie
 }

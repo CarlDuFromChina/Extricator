@@ -10,13 +10,13 @@ export class UserController {
   @Put()
   @UseGuards(AuthGuard('jwt'))
   update(@Body() userDto: User) {
-    return this.userService.updateData(userDto);
+    this.userService.updateData(userDto);
   }
 
   @Post()
   @UseGuards(AuthGuard('jwt'))
   create(@Body() createUserDto: User) {
-    return this.userService.createData(createUserDto);
+    this.userService.createData(createUserDto);
   }
 
   @Get(':code')

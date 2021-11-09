@@ -1,5 +1,6 @@
 import { Body, Controller, Post, Put, Request, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { User } from 'src/user/user.entity';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/regsiter.dto';
 
@@ -15,6 +16,7 @@ export class AuthController {
 
   @Post('signup')
   signup(@Body() regsiterDto: RegisterDto) {
-    return this.authService.signup(regsiterDto);
+    var user = regsiterDto as User;
+    return this.authService.signup(user);
   }
 }

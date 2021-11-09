@@ -38,27 +38,20 @@ export default defineComponent({
       juejin: '123',
       jd: '',
     });
-    var data: any = {};
     const code = store.getters.userCode;
     axios.get(`/api/user/${code}`).then((resp: any) => {
       if (resp) {
         Object.assign(formSetting, resp.cookie);
-        data = resp;
       } else {
         message.error('获取用户设置失败');
       }
     });
     const submit = () => {
       formRef.value.validate().then(() => {
-        data.cookie = toRaw(formSetting);
         axios
-          .put('/api/user', data)
+          .put('/api/cookie', toRaw(formSetting))
           .then((resp) => {
-            if (resp) {
-              message.success('修改成功');
-            } else {
-              message.error('修改失败');
-            }
+            message.success('修改成功');
           });
       });
     };
