@@ -25,7 +25,7 @@ services:
         max-size: "50m"
     restart: always
     ports:
-      - "127.0.0.1:5432:5432"
+      - "127.0.0.1:5433:5432"
     environment:
       POSTGRES_DB: extrictor
       POSTGRES_USER: postgres
@@ -43,8 +43,17 @@ services:
       dockerfile: Dockerfile
     environment:
       - NODE_ENV=production
+      - TYPEORM_CONNECTION = postgres
+      - TYPEORM_HOST = pgdb
+      - TYPEORM_USERNAME = postgres
+      - TYPEORM_PASSWORD = 123123
+      - TYPEORM_DATABASE = extrictor
+      - TYPEORM_PORT = 5433
+      - TYPEORM_LOGGING = true     
     ports:
       - "5000:5000"
+    links:
+      - pgdb
     networks:
       - extricator-network
 

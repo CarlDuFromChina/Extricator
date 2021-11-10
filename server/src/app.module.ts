@@ -7,9 +7,18 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TaskModule } from './task/task.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { CookieModule } from './cookie/cookie.module';
 import { CheckinRecordModule } from './checkin-record/checkin-record.module';
+
+var dbConfig = {
+  type: process.env.TYPEORM_CONNECTION || 'postgres',
+  host: process.env.TYPEORM_HOST || 'localhost',
+  port: process.env.TYPEORM_PORT || '5433',
+  username: process.env.TYPEORM_USERNAME || 'postgres',
+  password: process.env.TYPEORM_PASSWORD || '123123',
+  database: process.env.TYPEORM_DATABASE || 'extrictor'
+} as TypeOrmModuleOptions;
 
 @Module({
   imports: [
@@ -20,14 +29,9 @@ import { CheckinRecordModule } from './checkin-record/checkin-record.module';
     ScheduleModule.forRoot(),
     TaskModule,
     TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: '123123',
-      database: 'extrictor',
-      synchronize: true,
-      autoLoadEntities: true
+      ...dbConfig,
+      autoLoadEntities: true,
+      synchronize: true
     }),
     CookieModule,
     CheckinRecordModule,
