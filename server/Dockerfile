@@ -13,6 +13,11 @@ RUN npm config set registry https://registry.npm.taobao.org \
 
 FROM node:14-alpine
 
+RUN apk add --no-cache tzdata \
+    && ln -snf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
+    && echo "Asia/Shanghai" > /etc/timezone
+ENV TZ Asia/Shanghai
+
 ENV NODE_ENV production
 
 USER node
