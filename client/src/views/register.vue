@@ -55,9 +55,9 @@
 <script lang="ts">
 import { defineComponent, reactive, ref, toRaw, UnwrapRef } from 'vue';
 import { SmileTwoTone } from '@ant-design/icons-vue';
-import axios from 'axios';
 import { message } from 'ant-design-vue';
 import { useRouter } from 'vue-router';
+import http from '../utils/http';
 
 interface FormState {
   code: string;
@@ -95,8 +95,7 @@ export default defineComponent({
     };
     const submit = () => {
       formRef.value.validate().then(() => {
-        axios
-          .post('api/auth/signup', toRaw(formState))
+        http.post('/api/auth/signup', toRaw(formState))
           .then((resp) => {
             if (resp) {
               message.success('注册成功');

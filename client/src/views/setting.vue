@@ -1,6 +1,15 @@
 <template>
   <sp-view>
-    <sp-header></sp-header>
+    <sp-header>
+      <template #extra>
+        <a-tooltip>
+          <template #title>Cookie有效期为一个月，请及时更新</template>
+          <a-button size="small" shape="circle">
+            <template #icon><QuestionOutlined /></template>
+          </a-button>
+        </a-tooltip>
+      </template>
+    </sp-header>
     <sp-body>
       <a-form ref="formRef" :model="formSetting">
         <a-form-item label="掘金">
@@ -20,10 +29,11 @@
 <script lang="ts">
 import { reactive, ref, toRaw, UnwrapRef } from 'vue';
 import { message } from 'ant-design-vue';
-import axios from '../utils/http';
+import { QuestionOutlined } from '@ant-design/icons-vue';
 import store from '../store';
 import { useRouter } from 'vue-router';
 import { defineComponent } from '@vue/runtime-core';
+import http from '../utils/http';
 
 interface FormSetting {
   juejin: string;
@@ -39,7 +49,7 @@ export default defineComponent({
       jd: '',
     });
     const code = store.getters.userCode;
-    axios.get(`/api/user/${code}`).then((resp: any) => {
+    http.get(`/api/user/${code}`).then((resp: any) => {
       if (resp) {
         Object.assign(formSetting, resp.cookie);
       } else {
@@ -48,11 +58,9 @@ export default defineComponent({
     });
     const submit = () => {
       formRef.value.validate().then(() => {
-        axios
-          .put('/api/cookie', toRaw(formSetting))
-          .then((resp) => {
-            message.success('修改成功');
-          });
+        http.put('/api/cookie', toRaw(formSetting)).then((resp) => {
+          message.success('修改成功');
+        });
       });
     };
     return {
@@ -61,5 +69,6 @@ export default defineComponent({
       submit,
     };
   },
+  components: { QuestionOutlined },
 });
 </script>

@@ -37,10 +37,10 @@
 <script lang="ts">
 import { defineComponent, reactive, ref, toRaw, UnwrapRef } from 'vue';
 import { message } from 'ant-design-vue';
-import axios from '../utils/http';
 import store from '../store';
 import { useRouter } from 'vue-router';
 import assert from '../utils/assert';
+import http from '../utils/http';
 
 interface FormState {
   code: string;
@@ -62,7 +62,7 @@ export default defineComponent({
     };
     const signIn = () => {
       formRef.value.validate().then(() => {
-        axios.post('/api/auth/login', toRaw(formState)).then((resp) => {
+        http.post('/api/auth/login', toRaw(formState)).then((resp) => {
           if (!assert.isEmpty(resp)) {
             message.success('登录成功');
             store.commit('setToken', resp);

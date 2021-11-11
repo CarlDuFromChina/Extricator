@@ -2,17 +2,16 @@
   <sp-view>
     <sp-header></sp-header>
     <sp-body>
-      <a-table :columns="columns" :data-source="data">
-      </a-table>
+      <a-table :columns="columns" :data-source="data"></a-table>
     </sp-body>
   </sp-view>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "@vue/runtime-core";
-import { onBeforeMount } from "vue";
 import http from "../utils/http";
 import { useRequest } from 'vue-request';
+import format from "../utils/format";
 
 const columns = [
   {
@@ -42,6 +41,7 @@ export default defineComponent({
     const { data } = useRequest(() => http.get('/api/checkinrecord/data').then((resp: any) => {
       return resp.map((item: any) => {
         item.status_name = item.status ? '成功' : '失败';
+        item.created_at = format.dayjs(item.created_at);
         return item;
       });
     }));

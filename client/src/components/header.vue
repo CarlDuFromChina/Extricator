@@ -4,7 +4,14 @@
     style="border-bottom: 1px solid rgb(235, 237, 240)"
     :title="title"
     :sub-title="subTitle"
-  />
+  >
+    <template #tags>
+      <slot name="tags"></slot>
+    </template>
+    <template #extra>
+      <slot name="extra"></slot>
+    </template>
+  </a-page-header>
 </template>
 
 <script lang="ts">
