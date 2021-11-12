@@ -3,23 +3,29 @@
     <sp-header>
       <template #extra>
         <a-tooltip>
-          <template #title>Cookie有效期为一个月，请及时更新</template>
-          <a-button size="small" shape="circle">
+          <template #title>点击查看如何获取Cookie</template>
+          <a-button size="small" shape="circle" @click="gotoWiki">
             <template #icon><QuestionOutlined /></template>
           </a-button>
         </a-tooltip>
       </template>
     </sp-header>
     <sp-body>
-      <a-form ref="formRef" :model="formSetting">
+      <a-alert
+        message="注意：Cookie 有效期大部分为一个月，请及时更新"
+        type="warning"
+        style="margin-bottom: 12px"
+        show-icon
+      />
+      <a-form ref="formRef" layout="vertical" :model="formSetting">
         <a-form-item label="掘金">
-          <a-input v-model:value="formSetting.juejin"></a-input>
+          <a-textarea v-model:value="formSetting.juejin" placeholder="请输入掘金Cookie" :rows="4" />
         </a-form-item>
         <a-form-item label="京东">
-          <a-input v-model:value="formSetting.jd"></a-input>
+          <a-textarea v-model:value="formSetting.jd" placeholder="请输入京东Cookie" :rows="4" />
         </a-form-item>
         <a-form-item>
-          <a-button type="primary" @click="submit">提交</a-button>
+          <a-button type="primary" @click="submit">更新</a-button>
         </a-form-item>
       </a-form>
     </sp-body>
@@ -63,10 +69,14 @@ export default defineComponent({
         });
       });
     };
+    const gotoWiki = () => {
+      window.open('https://gitee.com/SixPenceStudio/extricator/wikis/%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E6%8E%98%E9%87%91Cookie');
+    };
     return {
       formRef,
       formSetting,
       submit,
+      gotoWiki,
     };
   },
   components: { QuestionOutlined },

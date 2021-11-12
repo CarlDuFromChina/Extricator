@@ -4,7 +4,11 @@
     style="border-bottom: 1px solid rgb(235, 237, 240)"
     :title="title"
     :sub-title="subTitle"
+    @back="back"
   >
+    <template #backIcon>
+      <ArrowLeftOutlined v-show="!!back" />
+    </template>
     <template #tags>
       <slot name="tags"></slot>
     </template>
@@ -17,15 +21,21 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import { RouteMeta, useRouter } from "vue-router";
+import { ArrowLeftOutlined } from '@ant-design/icons-vue';
 
 export default defineComponent({
   partialName: 'header',
+  components: { ArrowLeftOutlined },
   props: {
     title: {
       type: String,
     },
     subTitle: {
       type: String
+    },
+    back: {
+      type: Function,
+      default: null
     }
   },
   setup() {

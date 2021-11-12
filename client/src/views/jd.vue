@@ -2,7 +2,7 @@
   <sp-view :padding="'0px'">
     <sp-header></sp-header>
     <sp-body>
-      <a-button type="primary" style="margin-right: 12px" @click="draw">抽奖</a-button>
+      <a-button type="primary" style="margin-right: 12px" @click="draw">签到</a-button>
     </sp-body>
   </sp-view>
 </template>

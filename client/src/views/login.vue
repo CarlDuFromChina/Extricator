@@ -10,16 +10,12 @@
         </a-form-item>
         <a-form-item name="code">
           <a-input v-model:value="formState.code" placeholder="用户名" allowClear>
-            <template #prefix>
-              <a-icon type="user" style="color: rgba(0, 0, 0, 0.25)" />
-            </template>
+            <template #prefix><UserOutlined style="color: rgba(0, 0, 0, 0.25)" /></template>
           </a-input>
         </a-form-item>
         <a-form-item name="password">
           <a-input-password v-model:value="formState.password" placeholder="密码" @keyup.enter="signIn">
-            <template #prefix>
-              <a-icon type="lock" style="color: rgba(0, 0, 0, 0.25)" />
-            </template>
+            <template #prefix><LockOutlined style="color: rgba(0, 0, 0, 0.25)" /></template>
           </a-input-password>
         </a-form-item>
         <a-form-item>
@@ -37,6 +33,7 @@
 <script lang="ts">
 import { defineComponent, reactive, ref, toRaw, UnwrapRef } from 'vue';
 import { message } from 'ant-design-vue';
+import { UserOutlined, LockOutlined } from '@ant-design/icons-vue';
 import store from '../store';
 import { useRouter } from 'vue-router';
 import assert from '../utils/assert';
@@ -48,6 +45,7 @@ interface FormState {
 }
 
 export default defineComponent({
+  components: { UserOutlined, LockOutlined },
   setup() {
     const router = useRouter();
     const formRef = ref();

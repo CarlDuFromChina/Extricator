@@ -4,15 +4,15 @@
       <div class="logo" />
       <a-menu v-model:selectedKeys="selectedKeys" theme="dark" mode="inline">
         <a-menu-item key="1" @click="menuChange('juejin')">
-          <GlobalOutlined />
+          <sp-icon name="juejin" size="14" style="margin-right: 10px" ></sp-icon>
           <span>掘金</span>
         </a-menu-item>
         <a-menu-item key="2" @click="menuChange('jd')">
-          <GlobalOutlined />
+          <sp-icon name="jd" size="14" style="margin-right: 10px" ></sp-icon>
           <span>京东</span>
         </a-menu-item>
         <a-menu-item key="3" @click="menuChange('checkin')">
-          <GlobalOutlined />
+          <sp-icon name="signin" size="14" style="margin-right: 10px" ></sp-icon>
           <span>签到记录</span>
         </a-menu-item>
         <a-menu-item key="4" @click="menuChange('setting')">

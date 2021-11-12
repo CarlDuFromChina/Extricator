@@ -130,6 +130,9 @@ export class JuejinService {
         .toPromise()
         .then((resp) => {
           var result = resp.data as JuejinResponse<DrawData>;
+          if (result.err_no.toString() !== '0') {
+            throw new InternalServerErrorException(result.err_msg);
+          }
           return result;
         });
       promises.push(promise);

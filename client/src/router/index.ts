@@ -23,7 +23,8 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/register',
     name: 'register',
-    component: Register
+    component: Register,
+    meta: { title: '注册' }
   },
   {
     path: '/admin',

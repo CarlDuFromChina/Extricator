@@ -44,6 +44,7 @@ export class JdService {
     jdRecord.platform_name = '京东';
     jdRecord.user_code = code;
     jdRecord.status = result.code === '0';
+    jdRecord.error_reason = result.errorMessage;
     this.checkinRecordRepository.save(jdRecord);
     return result;
   }

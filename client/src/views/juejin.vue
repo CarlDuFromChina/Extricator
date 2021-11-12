@@ -14,10 +14,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { createVNode, defineComponent, ref } from 'vue';
 import dayjs, { Dayjs } from 'dayjs';
 import http from '../utils/http';
-import { message } from 'ant-design-vue';
+import { message, Modal } from 'ant-design-vue';
+import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 
 export default defineComponent({
   setup() {
@@ -44,9 +45,18 @@ export default defineComponent({
     };
 
     var allin = () => {
-      http.post('api/juejin/allin').then(resp => {
-        message.success(resp as string)
-      })
+      Modal.confirm({
+        title: '提示',
+        icon: createVNode(ExclamationCircleOutlined),
+        content: '请确认你是否要 ALL IN',
+        okText: '确认',
+        cancelText: '取消',
+        onOk: () => {
+          http.post('/api/juejin/allin').then(resp => {
+            message.success(resp as string)
+          })
+        }
+      });
     };
 
     http.get('/api/juejin/getTodayStatus').then(res => {

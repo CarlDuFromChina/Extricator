@@ -1,56 +1,42 @@
 <template>
-  <a-form
-    ref="formRef"
-    :model="formState"
-    :rules="rules"
-    layout="vertical"
-    class="register"
-  >
-    <a-steps :current="current">
-      <a-step v-for="item in steps" :key="item.title" :title="item.title" />
-    </a-steps>
-    <div class="steps-content">
-      <a-form-item name="code" label="用户名" v-show="current === 0">
-        <a-input
-          v-model:value="formState.code"
-          placeholder="请输入用户名"
-        ></a-input>
-      </a-form-item>
-      <a-form-item name="password" label="密码" v-show="current === 0">
-        <a-input-password
-          v-model:value="formState.password"
-          placeholder="请输入密码"
-          @keyup.enter="next"
-        ></a-input-password>
-      </a-form-item>
-      <a-form-item v-show="current === 1">设置Cookie</a-form-item>
-      <a-form-item label="掘金" v-show="current === 1">
-        <a-input v-model:value="formState.cookie.juejin"></a-input>
-      </a-form-item>
-      <a-form-item label="京东" v-show="current === 1">
-        <a-input v-model:value="formState.cookie.jd"></a-input>
-      </a-form-item>
-      <a-result
-        title="Great, we have done all the operations!"
-        v-show="current === 2"
-      >
-        <template #icon>
-          <SmileTwoTone></SmileTwoTone>
-        </template>
-        <template #extra>
-          <a-button type="primary" @click="submit">提交</a-button>
-        </template>
-      </a-result>
-    </div>
-    <div class="steps-action">
-      <a-button v-if="current < steps.length - 1" type="primary" @click="next"
-        >下一步</a-button
-      >
-      <a-button v-if="current > 0" style="margin-left: 8px" @click="prev"
-        >上一步</a-button
-      >
-    </div>
-  </a-form>
+  <sp-view>
+    <sp-header :back="goBackLogin">
+    </sp-header>
+    <sp-body>
+      <a-form ref="formRef" :model="formState" :rules="rules" layout="vertical" class="register">
+        <a-steps :current="current">
+          <a-step v-for="item in steps" :key="item.title" :title="item.title" />
+        </a-steps>
+        <div class="steps-content">
+          <a-form-item name="code" label="用户名" v-show="current === 0">
+            <a-input v-model:value="formState.code" placeholder="请输入用户名"></a-input>
+          </a-form-item>
+          <a-form-item name="password" label="密码" v-show="current === 0">
+            <a-input-password v-model:value="formState.password" placeholder="请输入密码" @keyup.enter="next"></a-input-password>
+          </a-form-item>
+          <a-form-item v-show="current === 1">设置Cookie</a-form-item>
+          <a-form-item label="掘金" v-show="current === 1">
+            <a-input v-model:value="formState.cookie.juejin"></a-input>
+          </a-form-item>
+          <a-form-item label="京东" v-show="current === 1">
+            <a-input v-model:value="formState.cookie.jd"></a-input>
+          </a-form-item>
+          <a-result title="Great, we have done all the operations!" v-show="current === 2">
+            <template #icon>
+              <SmileTwoTone></SmileTwoTone>
+            </template>
+            <template #extra>
+              <a-button type="primary" @click="submit">提交</a-button>
+            </template>
+          </a-result>
+        </div>
+        <div class="steps-action">
+          <a-button v-if="current < steps.length - 1" type="primary" @click="next">下一步</a-button>
+          <a-button v-if="current > 0" style="margin-left: 8px" @click="prev">上一步</a-button>
+        </div>
+      </a-form>
+    </sp-body>
+  </sp-view>
 </template>
 <script lang="ts">
 import { defineComponent, reactive, ref, toRaw, UnwrapRef } from 'vue';
@@ -72,6 +58,7 @@ export default defineComponent({
   setup() {
     const formRef = ref();
     const router = useRouter();
+    const goBackLogin = () => router.push('login');
     const formState: UnwrapRef<FormState> = reactive({
       code: '',
       password: '',
@@ -95,15 +82,10 @@ export default defineComponent({
     };
     const submit = () => {
       formRef.value.validate().then(() => {
-        http.post('/api/auth/signup', toRaw(formState))
-          .then((resp) => {
-            if (resp) {
-              message.success('注册成功');
-              router.push('login');
-            } else {
-              message.error('注册失败');
-            }
-          });
+        http.post('/api/auth/signup', toRaw(formState)).then((resp) => {
+          message.success('注册成功');
+          goBackLogin();
+        });
       });
     };
     return {
@@ -125,6 +107,7 @@ export default defineComponent({
       next,
       prev,
       submit,
+      goBackLogin,
     };
   },
   components: { SmileTwoTone },

@@ -32,7 +32,7 @@ export class JuejinController {
     return this.juejinService.checkin(code);
   }
 
-  @Post(':count')
+  @Post('draw')
   async draw(@AuthUser('code') code: string, @Query('count') count: number) {
     const resp = await this.juejinService.draw(code, count);
     var result = [];

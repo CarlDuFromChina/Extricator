@@ -14,10 +14,10 @@ import { CheckinRecordModule } from './checkin-record/checkin-record.module';
 var dbConfig = {
   type: process.env.TYPEORM_CONNECTION || 'postgres',
   host: process.env.TYPEORM_HOST || 'localhost',
-  port: process.env.TYPEORM_PORT || '5433',
+  port: process.env.TYPEORM_PORT || '5432',
   username: process.env.TYPEORM_USERNAME || 'postgres',
   password: process.env.TYPEORM_PASSWORD || '123123',
-  database: process.env.TYPEORM_DATABASE || 'extrictor'
+  database: process.env.TYPEORM_DATABASE || 'extricator'
 } as TypeOrmModuleOptions;
 
 @Module({

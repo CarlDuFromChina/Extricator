@@ -1,4 +1,5 @@
 export interface JdResponse<T> {
   code: string,
-  data: T
+  data: T,
+  errorMessage?: string
 }

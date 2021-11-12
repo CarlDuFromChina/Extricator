@@ -17,7 +17,10 @@ export class CheckinRecordService {
   getAllData(code?: string) {
     if (code) {
       return this.checkinRecordRepository.find({
-        where: { user_code: code }
+        where: { user_code: code },
+        order: {
+          created_at: 'DESC'
+        }
       });
     }
     return this.checkinRecordRepository.find();
