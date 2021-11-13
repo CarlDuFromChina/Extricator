@@ -1214,6 +1214,11 @@ js-stringify@^1.0.2:
   resolved "https://registry.nlark.com/js-tokens/download/js-tokens-4.0.0.tgz#19203fb59991df98e3a287050d4647cdeaf32499"
   integrity sha1-GSA/tZmR35jjoocFDUZHzerzJJk=
 
+jsencrypt@^3.2.1:
+  version "3.2.1"
+  resolved "https://registry.nlark.com/jsencrypt/download/jsencrypt-3.2.1.tgz#09766983cc760088ff26b12fe7e574252af97727"
+  integrity sha1-CXZpg8x2AIj/JrEv5+V0JSr5dyc=
+
 json5@^1.0.1:
   version "1.0.1"
   resolved "https://registry.npm.taobao.org/json5/download/json5-1.0.1.tgz#779fb0018604fa854eacbf6252180d83543e3dbe"
