@@ -45,7 +45,7 @@ const routes: Array<RouteRecordRaw> = [
       name: 'setting',
       path: '/admin/setting',
       component: Setting,
-      meta: { title: '设置' }
+      meta: { title: '设置', subTitle: '获取Cookie指南请点击旁边的问号按钮' }
     }, {
       name: 'checkin',
       path: '/admin/checkin',

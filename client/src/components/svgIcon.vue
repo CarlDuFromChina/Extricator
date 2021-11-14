@@ -1,5 +1,5 @@
 <template>
-  <svg class="svg-icon" @click="handleClick" :width="size" :height="size" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <svg class="svg-icon anticon" @click="handleClick" :width="size" :height="size" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <use :xlink:href="symbolId" :fill="color" />
   </svg>
 </template>
@@ -43,8 +43,5 @@ export default defineComponent({
   vertical-align: middle;
   vertical-align: middle;
   cursor: pointer;
-  &:hover {
-    color: #1890ff !important;
-  }
 }
 </style>

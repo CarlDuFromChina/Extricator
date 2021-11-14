@@ -39,7 +39,7 @@
   </sp-view>
 </template>
 <script lang="ts">
-import { defineComponent, reactive, ref, toRaw, UnwrapRef } from 'vue';
+import { defineComponent, onMounted, reactive, ref, toRaw, UnwrapRef } from 'vue';
 import { SmileTwoTone } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 import { useRouter } from 'vue-router';
