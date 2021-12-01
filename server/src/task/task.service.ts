@@ -21,8 +21,12 @@ export class TaskService {
     this.logger.debug('自动签到');
     this.userService.getAllData().then((users) => {
       users.forEach((user) => {
-        this.jdService.checkin(user.code);
-        this.juejinService.checkin(user.code);
+        if (user.cookie.juejin) {
+          this.juejinService.checkin(user.code);
+        }
+        if (user.cookie.jd) {
+          this.jdService.checkin(user.code);          
+        }
       });
     });
   }
