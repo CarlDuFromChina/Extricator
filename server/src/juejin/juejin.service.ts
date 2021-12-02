@@ -8,6 +8,7 @@ import { CheckinCounts } from './interfaces/checkin-counts.interface';
 import { CheckInData } from './interfaces/checkin-data.interface';
 import { DrawData } from './interfaces/draw-data.interface';
 import { JuejinResponse } from './interfaces/juejin-response.interface';
+import { LotteryConfigData } from './interfaces/lottery-config-data.interface';
 
 @Injectable()
 export class JuejinService {
@@ -68,6 +69,19 @@ export class JuejinService {
       .get('growth_api/v1/get_today_status', config)
       .toPromise();
     return this.handleReponse(res.data as JuejinResponse<boolean>);
+  }
+
+  /**
+   * 获取奖池
+   * @param code 用户编号
+   * @returns 
+   */
+  async getLotteryConfig(code: string): Promise<LotteryConfigData> {
+    const config = await this.getConfig(code);
+    const res = await this.httpService
+      .get('growth_api/v1/lottery_config/get', config)
+      .toPromise();
+    return this.handleReponse(res.data as JuejinResponse<LotteryConfigData>);
   }
 
   /**

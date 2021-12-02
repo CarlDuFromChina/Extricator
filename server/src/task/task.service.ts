@@ -22,7 +22,14 @@ export class TaskService {
     this.userService.getAllData().then((users) => {
       users.forEach((user) => {
         if (user.cookie.juejin) {
+          // 签到
           this.juejinService.checkin(user.code);
+          // 免费抽奖
+          this.juejinService.getLotteryConfig(user.code).then(resp => {
+            if (resp.free_count > 0) {
+              this.juejinService.draw(user.code, 1);
+            }
+          })
         }
         if (user.cookie.jd) {
           this.jdService.checkin(user.code);          

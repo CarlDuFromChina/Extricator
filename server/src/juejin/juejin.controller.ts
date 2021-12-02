@@ -27,6 +27,12 @@ export class JuejinController {
     return this.juejinService.getCheckinCounts(code);
   }
 
+  @Get('getFreeTimes')
+  async getFreeTimes(@AuthUser('code') code: string) {
+    const lottery = await this.juejinService.getLotteryConfig(code);
+    return lottery.free_count;
+  }
+
   @Post('checkin')
   checkin(@AuthUser('code') code: string) {
     return this.juejinService.checkin(code);
