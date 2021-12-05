@@ -3,21 +3,13 @@
     <a-layout-sider v-model:collapsed="collapsed" :trigger="null" collapsible>
       <div class="logo" />
       <a-menu v-model:selectedKeys="selectedKeys" theme="dark" mode="inline">
-        <a-menu-item key="1" @click="menuChange('juejin')">
-          <sp-icon name="juejin" size="14"></sp-icon>
-          <span>掘金</span>
-        </a-menu-item>
-        <a-menu-item key="2" @click="menuChange('jd')">
-          <sp-icon name="jd" size="14"></sp-icon>
-          <span>京东</span>
-        </a-menu-item>
-        <a-menu-item key="3" @click="menuChange('checkin')">
+        <a-menu-item key="1" @click="menuChange('signin')">
           <sp-icon name="signin" size="14"></sp-icon>
-          <span>签到记录</span>
+          <span>平台签到</span>
         </a-menu-item>
-        <a-menu-item key="4" @click="menuChange('setting')">
-          <SettingOutlined />
-          <span>设置</span>
+        <a-menu-item key="2" @click="gotoWiki">
+          <sp-icon name="help" size="14"></sp-icon>
+          <span>签到说明</span>
         </a-menu-item>
       </a-menu>
     </a-layout-sider>
@@ -122,6 +114,7 @@ import {
   GlobalOutlined,
   LogoutOutlined,
   EditOutlined,
+  QuestionOutlined
 } from "@ant-design/icons-vue";
 import { message } from "ant-design-vue";
 import { RuleObject } from "ant-design-vue/lib/form/interface";
@@ -144,6 +137,7 @@ export default defineComponent({
     GlobalOutlined,
     LogoutOutlined,
     EditOutlined,
+    QuestionOutlined
   },
   setup() {
     const router = useRouter();
@@ -188,7 +182,11 @@ export default defineComponent({
       pass: [{ required: true, validator: validatePass, trigger: "change" }],
       checkPass: [{ validator: validatePass2, trigger: "change" }],
     };
+    var gotoWiki = () => {
+      window.open('https://karl-du.gitbook.io/extricator/');
+    }
     return {
+      gotoWiki,
       formRef,
       formState,
       selectedKeys: ref<string[]>(["1"]),

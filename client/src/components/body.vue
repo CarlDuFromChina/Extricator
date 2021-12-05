@@ -1,5 +1,5 @@
 <template>
-  <div :style="{ padding: padding, overflowY: 'auto', maxHeight: '100%', height: '100%' }">
+  <div :style="{ padding: padding, overflowY: 'auto', overflowX: 'hidden', maxHeight: '100%', height: '100%' }">
     <slot></slot>
   </div>
 </template>
@@ -11,7 +11,7 @@ export default defineComponent({
   partialName: 'body',
   props: {
     padding: {
-      type: String,
+      type: [String, Number],
       default: '24px'
     }
   }
