@@ -28,6 +28,19 @@ export class JdService {
   }
 
   /**
+   * 获取今日签到状态
+   * @param code 用户编号
+   * @returns 
+   */
+  async getTodayStatus(code: string) {
+    var data = await this.checkinRecordService.getTodayData(code, 'jd');
+    if (data && data.status) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
    * 签到
    * @param code 用户编码
    * @returns 

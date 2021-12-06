@@ -34,7 +34,7 @@
                 </a-col>
               </a-row>
               <template class="ant-card-actions" #actions>
-                <a-button type="link" @click="jd.checkin">签到</a-button>
+                <a-button type="link" @click="jd.checkin" :disabled="jdChecked">{{ jdChecked ? '已签到' : '签到' }}</a-button>
                 <a-button type="link" @click="openCookieEditForm('jd')">Cookie</a-button>
               </template>
             </a-card>
@@ -159,6 +159,9 @@ export default defineComponent({
 
     var jdChecked = ref<boolean>(false);
     var jd = {
+      getStatus: () => {
+        http.get('/api/jd/getTodayStatus').then(resp => jdChecked.value = resp as boolean);
+      },
       checkin: () => {
         http.post('/api/jd/checkin').then((resp) => {
           const result = resp as any;
@@ -170,6 +173,7 @@ export default defineComponent({
         });
       },
     };
+    jd.getStatus();
 
     const { data } = useRequest(() =>
       http.get('/api/checkinrecord/data').then((resp: any) => {
