@@ -1,7 +1,6 @@
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { CheckinRecord } from 'src/checkin-record/checkin-record.entity';
+import { CheckinRecordModule } from 'src/checkin-record/checkin-record.module';
 import { UserModule } from 'src/user/user.module';
 import { JdController } from './jd.controller';
 import { JdService } from './jd.service';
@@ -9,7 +8,7 @@ import { JdService } from './jd.service';
 @Module({
   imports: [
     UserModule,
-    TypeOrmModule.forFeature([CheckinRecord]),
+    CheckinRecordModule,
     HttpModule.register({
       timeout: 5000,
       baseURL: 'https://api.m.jd.com',

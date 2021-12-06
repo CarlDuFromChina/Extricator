@@ -1,9 +1,8 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { CheckinRecord } from 'src/checkin-record/checkin-record.entity';
+import { CheckinRecordService } from 'src/checkin-record/checkin-record.service';
 import { UserService } from 'src/user/user.service';
-import { Repository } from 'typeorm';
 import { CheckinCounts } from './interfaces/checkin-counts.interface';
 import { CheckInData } from './interfaces/checkin-data.interface';
 import { DrawData } from './interfaces/draw-data.interface';
@@ -15,8 +14,7 @@ export class JuejinService {
   constructor(
     private readonly httpService: HttpService,
     private readonly userService: UserService,
-    @InjectRepository(CheckinRecord)
-    private checkinRecordRepository: Repository<CheckinRecord>,
+    private readonly checkinRecordService: CheckinRecordService
   ) {}
 
   /**
@@ -116,12 +114,12 @@ export class JuejinService {
       result.data as JuejinResponse<CheckInData>,
       () => {
         juejinRecord.status = true;
-        this.checkinRecordRepository.save(juejinRecord);
+        this.checkinRecordService.createOrUpdateData(juejinRecord);
       },
       (msg: string) => {
         juejinRecord.status = false;
         juejinRecord.error_reason = msg;
-        this.checkinRecordRepository.save(juejinRecord);
+        this.checkinRecordService.createOrUpdateData(juejinRecord);
       },
     );
   }

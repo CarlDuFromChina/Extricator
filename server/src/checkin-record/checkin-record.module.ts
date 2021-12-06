@@ -7,6 +7,7 @@ import { CheckinRecordController } from './checkin-record.controller';
 @Module({
   imports: [TypeOrmModule.forFeature([CheckinRecord])],
   providers: [CheckinRecordService],
-  controllers: [CheckinRecordController]
+  controllers: [CheckinRecordController],
+  exports: [CheckinRecordService]
 })
 export class CheckinRecordModule {}

@@ -15,7 +15,7 @@
                 </a-col>
               </a-row>
               <template class="ant-card-actions" #actions>
-                <a-button type="link" @click="juejin.checkin">签到</a-button>
+                <a-button type="link" @click="juejin.checkin" :disabled="juejinChecked">{{ juejinChecked ? '已签到' : '签到' }}</a-button>
                 <a-button type="link" @click="juejin.draw">抽奖</a-button>
                 <a-button type="link" @click="juejin.allin">梭哈</a-button>
                 <a-button type="link" @click="openCookieEditForm('juejin')">Cookie</a-button>
@@ -123,16 +123,16 @@ export default defineComponent({
       });
     };
     
+    var juejinChecked = ref<boolean>(false);
+
     var juejin = {
-      checkin: async () => {
-        const isChecked = await http.get('/api/juejin/getTodayStatus') as boolean;
-        if (!isChecked) {
-          http.post('/api/juejin/checkin').then(() => {
-            message.success('签到成功');
-          });
-        } else {
-          message.warning('已签到，请勿重复签到');
-        }
+      getStatus: () => {
+        http.get('/api/juejin/getTodayStatus').then(resp => juejinChecked.value = resp as boolean);
+      },
+      checkin: () => {
+        http.post('/api/juejin/checkin').then(() => {
+          message.success('签到成功');
+        });
       },
       draw: () => {
         http.post('/api/juejin/draw?count=1').then((resp) => {
@@ -155,7 +155,9 @@ export default defineComponent({
         });
       },
     };
+    juejin.getStatus();
 
+    var jdChecked = ref<boolean>(false);
     var jd = {
       checkin: () => {
         http.post('/api/jd/checkin').then((resp) => {
@@ -172,7 +174,6 @@ export default defineComponent({
     const { data } = useRequest(() =>
       http.get('/api/checkinrecord/data').then((resp: any) => {
         return resp
-          .filter((item: any) => (item.status === true))
           .map((item: any) => {
             return {
               type: item.status ? 'success' : 'error',
@@ -199,7 +200,9 @@ export default defineComponent({
       value,
       getListData,
       juejin,
+      juejinChecked,
       jd,
+      jdChecked
     };
   },
   components: { QuestionOutlined },

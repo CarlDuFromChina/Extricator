@@ -4,16 +4,14 @@ import { CheckInData } from "./interfaces/checkin-data.interface";
 import { UserService } from "src/user/user.service";
 import { JdResponse } from "./interfaces/jd-response.interface";
 import { CheckinRecord } from "src/checkin-record/checkin-record.entity";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { CheckinRecordService } from "src/checkin-record/checkin-record.service";
 
 @Injectable()
 export class JdService {
   constructor(
     private httpService: HttpService,
     private userService: UserService,
-    @InjectRepository(CheckinRecord)
-    private checkinRecordRepository: Repository<CheckinRecord>
+    private readonly checkinRecordService: CheckinRecordService
   ) {}
 
   /**
@@ -45,7 +43,7 @@ export class JdService {
     jdRecord.user_code = code;
     jdRecord.status = result.code === '0';
     jdRecord.error_reason = result.errorMessage;
-    this.checkinRecordRepository.save(jdRecord);
+    this.checkinRecordService.createOrUpdateData(jdRecord);
     return result;
   }
 }
