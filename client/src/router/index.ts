@@ -26,7 +26,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/admin',
     name: 'admin',
-    redirect: '/admin/sign',
+    redirect: '/admin/signin',
     meta: { title: '后台管理', isAuth: true },
     children: [{
       name: 'signin',

@@ -1,7 +1,10 @@
 <template>
   <a-layout style="height: 100%">
     <a-layout-sider v-model:collapsed="collapsed" :trigger="null" collapsible>
-      <div class="logo" />
+      <div class="logo-wrap">
+        <div class="logo"></div>
+        <div class="logo-title">解脱者</div>
+      </div>
       <a-menu v-model:selectedKeys="selectedKeys" theme="dark" mode="inline">
         <a-menu-item key="1" @click="menuChange('signin')">
           <sp-icon name="signin" size="14"></sp-icon>
@@ -17,27 +20,18 @@
       <a-layout-header
         :style="{ background: '#fff', padding: 0, position: 'relative' }"
       >
-        <menu-unfold-outlined
-          v-if="collapsed"
-          class="trigger"
-          @click="() => (collapsed = !collapsed)"
-        />
-        <menu-fold-outlined
-          v-else
-          class="trigger"
-          @click="() => (collapsed = !collapsed)"
-        />
         <a-dropdown>
-          <a-avatar
-            src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-            shape="circle"
+          <sp-icon
+            name="user"
+            size="32"
             :style="{
               position: 'absolute',
               top: '20%',
               right: '20px',
               cursor: 'pointer',
             }"
-          />
+          >
+          </sp-icon>
           <template #overlay>
             <a-menu>
               <a-menu-item key="1" @click="visible = true"
@@ -114,11 +108,12 @@ import {
   GlobalOutlined,
   LogoutOutlined,
   EditOutlined,
-  QuestionOutlined
+  QuestionOutlined,
+  ExclamationCircleOutlined
 } from "@ant-design/icons-vue";
-import { message } from "ant-design-vue";
+import { message, Modal } from "ant-design-vue";
 import { RuleObject } from "ant-design-vue/lib/form/interface";
-import { defineComponent, onMounted, reactive, ref, toRaw, UnwrapRef } from "vue";
+import { createVNode, defineComponent, reactive, ref, toRaw, UnwrapRef } from "vue";
 import { useRouter } from "vue-router";
 import store from "../store";
 import http from "../utils/http";
@@ -183,7 +178,14 @@ export default defineComponent({
       checkPass: [{ validator: validatePass2, trigger: "change" }],
     };
     var gotoWiki = () => {
-      window.open('https://karl-du.gitbook.io/extricator/');
+      Modal.confirm({
+        title: () => '你确定你要打开站外链接吗?',
+        icon: () => createVNode(ExclamationCircleOutlined),
+        content: () => createVNode('div', {}, 'https://karl-du.gitbook.io/extricator/'),
+        onOk() {
+          window.open('https://karl-du.gitbook.io/extricator/');
+        }
+      });
     }
     return {
       gotoWiki,
@@ -213,10 +215,22 @@ export default defineComponent({
   color: #1890ff;
 }
 
+.logo-wrap {
+  display: flex;
+  align-items: center;
+}
+
 .logo {
-  height: 32px;
-  background: rgba(255, 255, 255, 0.3);
+  width: 48px;
+  height: 48px;
   margin: 16px;
+  background: url('../assets/logo.png') no-repeat;
+  background-size: 48px 48px;
+}
+
+.logo-title {
+  font-size: 32px;
+  color: #fff;
 }
 
 .site-layout .site-layout-background {

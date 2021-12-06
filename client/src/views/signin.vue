@@ -6,7 +6,7 @@
           <a-col :span="6">
             <a-card :bordered="false">
               <a-row>
-                <a-col style="text-align: center" :span="4">
+                <a-col style="text-align: left" :span="4">
                   <sp-icon name="juejin" size="36"></sp-icon>
                 </a-col>
                 <a-col :span="20">
@@ -25,7 +25,7 @@
           <a-col :span="6">
             <a-card :bordered="false">
               <a-row>
-                <a-col style="text-align: center" :span="4">
+                <a-col style="text-align: left" :span="4">
                   <sp-icon name="jd" size="36"></sp-icon>
                 </a-col>
                 <a-col :span="20">
@@ -42,9 +42,9 @@
         </a-row>
       </div>
       <a-calendar v-model:value="value" style="background-color: #fff;">
-        <template #dateCellRender="{ current: value }">
+        <template #dateCellRender="{ current }">
           <ul class="events">
-            <li v-for="item in getListData(value)" :key="item.content">
+            <li v-for="item in getListData(current)" :key="item.content">
               <a-badge :status="item.type" :text="item.content" />
             </li>
           </ul>
@@ -188,8 +188,6 @@ export default defineComponent({
       return listData || [];
     };
 
-    const goSettingView = () => router.push('setting');
-
     return {
       formRef,
       openCookieEditForm,
@@ -197,7 +195,6 @@ export default defineComponent({
       cookieName,
       formCookie,
       visible,
-      goSettingView,
       size,
       value,
       getListData,
@@ -227,7 +224,13 @@ export default defineComponent({
   font-family: 'PingFang SC ', 'PingFang SC', sans-serif;
   font-weight: 400;
   font-style: normal;
+  display: -webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
   color: rgba(0, 0, 0, 0.4470588235294118);
+  height: 44px;
   line-height: 22px;
   font-size: 14px;
   text-align: left;
