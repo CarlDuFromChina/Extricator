@@ -4,6 +4,7 @@ import Login from '../views/login.vue';
 import Register from '../views/register.vue';
 import Admin from '../views/admin.vue';
 import Signin from '../views/signin.vue';
+import Doc from '../views/doc.vue';
 import store from "../store";
 
 const routes: Array<RouteRecordRaw> = [
@@ -33,6 +34,10 @@ const routes: Array<RouteRecordRaw> = [
       path: '/admin/signin',
       component: Signin,
       meta: { title: '平台签到' }
+    }, {
+      name: 'doc',
+      path: '/admin/doc/:url',
+      component: Doc,
     }],
     component: Admin
   }

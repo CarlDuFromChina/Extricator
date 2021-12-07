@@ -10,7 +10,7 @@
           <sp-icon name="signin" size="14"></sp-icon>
           <span>平台签到</span>
         </a-menu-item>
-        <a-menu-item key="2" @click="gotoWiki">
+        <a-menu-item key="2" @click="menuChange('doc', { url: encodeURIComponent(GET_COOKIE) })">
           <sp-icon name="help" size="14"></sp-icon>
           <span>签到说明</span>
         </a-menu-item>
@@ -101,6 +101,8 @@
   </a-layout>
 </template>
 <script lang="ts">
+const GET_COOKIE = 'https://sixpence.top/#/blog/df07ea48-a138-45aa-b81a-ba732d38f24e';
+
 import {
   SettingOutlined,
   MenuUnfoldOutlined,
@@ -109,7 +111,6 @@ import {
   LogoutOutlined,
   EditOutlined,
   QuestionOutlined,
-  ExclamationCircleOutlined
 } from "@ant-design/icons-vue";
 import { message, Modal } from "ant-design-vue";
 import { RuleObject } from "ant-design-vue/lib/form/interface";
@@ -142,8 +143,8 @@ export default defineComponent({
       pass: "",
       checkPass: "",
     });
-    const menuChange = (name: string) => {
-      router.push({ name });
+    const menuChange = (name: string, params?: any ) => {
+      router.push({ name, params });
     };
     const logout = () => {
       store.commit("logout");
@@ -177,18 +178,7 @@ export default defineComponent({
       pass: [{ required: true, validator: validatePass, trigger: "change" }],
       checkPass: [{ validator: validatePass2, trigger: "change" }],
     };
-    var gotoWiki = () => {
-      Modal.confirm({
-        title: () => '你确定你要打开站外链接吗?',
-        icon: () => createVNode(ExclamationCircleOutlined),
-        content: () => createVNode('div', {}, 'https://karl-du.gitbook.io/extricator/'),
-        onOk() {
-          window.open('https://karl-du.gitbook.io/extricator/');
-        }
-      });
-    }
     return {
-      gotoWiki,
       formRef,
       formState,
       selectedKeys: ref<string[]>(["1"]),
@@ -198,6 +188,7 @@ export default defineComponent({
       visible,
       rules,
       changePassword,
+      GET_COOKIE
     };
   },
 });

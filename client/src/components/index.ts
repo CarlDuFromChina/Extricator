@@ -3,9 +3,10 @@ import View from './view.vue';
 import Header from './header.vue';
 import Body from './body.vue';
 import Icon from './svgIcon.vue';
+import Iframe from './iframe.vue';
 
 const prefix = 'sp';
-const components = [View, Header, Body, Icon];
+const components = [View, Header, Body, Icon, Iframe];
 
 export default {
   install: (app: any, options: any) => {
