@@ -10,7 +10,7 @@
           <sp-icon name="signin" size="14"></sp-icon>
           <span>平台签到</span>
         </a-menu-item>
-        <a-menu-item key="2" @click="menuChange('doc', { url: encodeURIComponent(GET_COOKIE) })">
+        <a-menu-item key="2" @click.stop="gotoWiki">
           <sp-icon name="help" size="14"></sp-icon>
           <span>签到说明</span>
         </a-menu-item>
@@ -101,8 +101,6 @@
   </a-layout>
 </template>
 <script lang="ts">
-const GET_COOKIE = 'https://sixpence.top/#/blog/df07ea48-a138-45aa-b81a-ba732d38f24e';
-
 import {
   SettingOutlined,
   MenuUnfoldOutlined,
@@ -114,7 +112,7 @@ import {
 } from "@ant-design/icons-vue";
 import { message, Modal } from "ant-design-vue";
 import { RuleObject } from "ant-design-vue/lib/form/interface";
-import { createVNode, defineComponent, reactive, ref, toRaw, UnwrapRef } from "vue";
+import { createVNode, defineComponent, reactive, ref, toRaw, UnwrapRef, watch } from "vue";
 import { useRouter } from "vue-router";
 import store from "../store";
 import http from "../utils/http";
@@ -178,17 +176,26 @@ export default defineComponent({
       pass: [{ required: true, validator: validatePass, trigger: "change" }],
       checkPass: [{ validator: validatePass2, trigger: "change" }],
     };
+    var gotoWiki = () => {
+      window.open('https://karl-du.gitbook.io/extricator/');
+    }
+    var selectedKeys = ref<string[]>(["1"]);
+    watch(selectedKeys, (newVal, oldVal) => {
+      if (toRaw(newVal)[0] === '2') {
+        selectedKeys.value = toRaw(oldVal);
+      }
+    });
     return {
+      gotoWiki,
       formRef,
       formState,
-      selectedKeys: ref<string[]>(["1"]),
+      selectedKeys,
       collapsed: ref<boolean>(false),
       menuChange,
       logout,
       visible,
       rules,
-      changePassword,
-      GET_COOKIE
+      changePassword
     };
   },
 });
