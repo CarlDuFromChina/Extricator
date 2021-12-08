@@ -20,7 +20,7 @@ export class CheckinRecordService {
       .createQueryBuilder('checkin_record')
       .where('checkin_record.user_code = :code', { code: code })
       .andWhere('checkin_record.platform = :platform', { platform })
-      .andWhere('checkin_record.created_at >= current_date')
+      .andWhere('created_at::date = current_date')
       .getOne();
   }
 
