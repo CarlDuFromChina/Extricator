@@ -1,20 +1,24 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { CheckinRecord } from 'src/checkin-record/checkin-record.entity';
 import { CheckinRecordService } from 'src/checkin-record/checkin-record.service';
-import { UserService } from 'src/user/user.service';
+import { isEmpty } from 'src/common/assert';
+import { Repository } from 'typeorm';
 import { CheckinCounts } from './interfaces/checkin-counts.interface';
 import { CheckInData } from './interfaces/checkin-data.interface';
 import { DrawData } from './interfaces/draw-data.interface';
 import { JuejinResponse } from './interfaces/juejin-response.interface';
 import { LotteryConfigData } from './interfaces/lottery-config-data.interface';
+import { Juejin } from './juejin.entity';
 
 @Injectable()
 export class JuejinService {
   constructor(
     private readonly httpService: HttpService,
-    private readonly userService: UserService,
-    private readonly checkinRecordService: CheckinRecordService
+    private readonly checkinRecordService: CheckinRecordService,
+    @InjectRepository(Juejin)
+    private juejinReporsitory: Repository<Juejin>,
   ) {}
 
   /**
@@ -23,10 +27,10 @@ export class JuejinService {
    * @returns
    */
   private async getConfig(code: string) {
-    const user = await this.userService.getData(code);
+    const data = await this.juejinReporsitory.findOne({ user_code: code });
     return {
       withCredentials: true,
-      headers: { cookie: user.cookie.juejin },
+      headers: { cookie: data.cookie },
     };
   }
 
@@ -170,5 +174,34 @@ export class JuejinService {
       }
     });
     return prize;
+  }
+
+  async getData(userCode: string) {
+    return this.juejinReporsitory.findOne({ where: { user_code: userCode }});
+  }
+
+  async createData(data: Juejin, userCode: string) {
+    if (!isEmpty(data.cookie)) {
+      var now = new Date();
+      now.setMonth(now.getMonth() + 1); // 掘金cookie过期时间为一个月
+      data.expired_at = now;
+    }
+    data.user_code = userCode;
+    this.juejinReporsitory.insert(data);
+  }
+
+  async updateData(data: Juejin, userCode: string) {
+    var _data = await this.juejinReporsitory.findOne({ where: { user_code: userCode }});
+    if (!isEmpty(data.cookie)) {
+      if (_data.cookie !== data.cookie) {
+        var expireDate = new Date();
+        expireDate.setMonth(expireDate.getMonth() + 1); // 掘金cookie过期时间为一个月
+        data.expired_at = expireDate;
+      }
+    } else {
+      data.expired_at = null;
+    }
+    data.updated_at = new Date();
+    await this.juejinReporsitory.save(data);
   }
 }

@@ -37,25 +37,21 @@ export class CheckinRecordService {
   }
 
   /**
-   * 创建或更新签到记录（签到记录只记录当日自动签到成功或失败的记录，失败后手动签到则在失败的记录上更新）
+   * 创建或更新签到记录
    * @param checkinRecord 签到记录
    */
   async createOrUpdateData(checkinRecord: CheckinRecord) {
-    var data = await this.getTodayData(checkinRecord.user_code, checkinRecord.platform);
+    var data = await this.getTodayData(checkinRecord.user_code, checkinRecord.platform); // 获取今天的签到记录
+    // 今天没有签到，则插入签到记录
     if (isNil(data)) {
-      this.createData(checkinRecord);
+      await this.checkinRecordRepository.insert(checkinRecord);
     } else {
-      checkinRecord.id = data.id;
-      this.updateData(checkinRecord);
+      // 今日签到状态是失败则更新，成功则无需再创建签到记录了
+      if (!data.status) {
+        checkinRecord.id = data.id;
+        await this.checkinRecordRepository.save(checkinRecord);
+      }
     }
-  }
-
-  async createData(checkinRecord: CheckinRecord) {
-    await this.checkinRecordRepository.insert(checkinRecord);
-  }
-
-  updateData(checkinRecord: CheckinRecord) {
-    this.checkinRecordRepository.save(checkinRecord);
   }
 
   deleteData(code: string) {

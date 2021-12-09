@@ -1,10 +1,11 @@
 /* juejin.controller.ts */
 
-import { Controller, Get, InternalServerErrorException, Param, Post, Query, Req, UseFilters, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, InternalServerErrorException, Param, Post, Put, Query, Req, UseFilters, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { AuthUser } from "src/user/user.decorator";
 import { JuejinService } from "./juejin.service";
 import { HttpExceptionFilter } from "src/http-exception.filter";
+import { Juejin } from "./juejin.entity";
 
 @Controller('juejin')
 @UseFilters(new HttpExceptionFilter())
@@ -67,5 +68,20 @@ export class JuejinController {
       }
       return result;
     }
+  }
+
+  @Get('data')
+  getData(@AuthUser('code') code: string) {
+    return this.juejinService.getData(code);
+  }
+
+  @Post('data')
+  createData(@AuthUser('code') code: string, @Body() dto: Juejin) {
+    return this.juejinService.createData(dto, code);
+  }
+
+  @Put('data')
+  updateData(@AuthUser('code') code: string, @Body() dto: Juejin) {
+    return this.juejinService.updateData(dto, code);
   }
 }

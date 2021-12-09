@@ -2,6 +2,7 @@ import { Body, Controller, Post, Put, Request, UseGuards } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport';
 import { AuthUser } from 'src/user/user.decorator';
 import { User } from 'src/user/user.entity';
+import { Transaction } from 'typeorm';
 import { AuthService } from './auth.service';
 import { ChangePwdDto } from './dto/change-pwd.dto';
 import { RegisterDto } from './dto/regsiter.dto';

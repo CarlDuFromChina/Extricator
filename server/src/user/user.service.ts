@@ -1,6 +1,5 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { forwardRef, HttpException, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Cookie } from 'src/cookie/cookie.entity';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import EncryptFactory, { IEncrypt, EncryptType } from '../common/encrypt';
@@ -12,19 +11,21 @@ export class UserService {
   
   constructor(
     @InjectRepository(User)
-    private usersReporsitory: Repository<User>,
-    @InjectRepository(Cookie)
-    private cookiesRepository: Repository<Cookie>
+    private usersReporsitory: Repository<User>
   ) {
     this.md5 = EncryptFactory.createInstance(EncryptType.md5);
   }
 
-  async getData(code: string): Promise<User> {
-    return this.usersReporsitory.findOne(code, { relations: ['cookie' ]});
+  async getData(code: string, withPwd: boolean = false): Promise<User> {
+    var data = await this.usersReporsitory.findOne(code);
+    if (!withPwd) {
+      data.password = null;
+    }
+    return data;
   }
 
   async getAllData(): Promise<User[]> {
-    return this.usersReporsitory.find({ relations: ['cookie'] });
+    return this.usersReporsitory.find();
   }
 
   async createData(user: User): Promise<void> {
@@ -36,27 +37,24 @@ export class UserService {
       throw new HttpException('注册失败，用户已被注册', 500);
     }
 
-    var cookie = new Cookie();
-    const { jd, juejin } = user.cookie;
-    cookie.user_code = user.code;
-    cookie.jd = jd;
-    cookie.juejin = juejin;
-    await this.cookiesRepository.save(cookie);
-
     user.password = this.md5.encrypt(user.password);
-    user.cookie = cookie
     await this.usersReporsitory.save(user);
   }
 
-  async updateData(user: User): Promise<void> {
-    if (assert.isEmpty(user.code) || assert.isEmpty(user.password)) {
+  async updateData(user: User, withPwd: boolean = false): Promise<void> {
+    if (assert.isEmpty(user.code) || (assert.isEmpty(user.password) && withPwd)) {
       throw new HttpException('更新失败，用户编号和密码不能为空', 500);
     }
-    var data = await this.getData(user.code);
+    var data = await this.getData(user.code, true);
     if (!data) {
       throw new HttpException('更新失败，用户不存在', 500);
     }
-    user.password = this.md5.encrypt(user.password);
+
+    if (withPwd) {
+      user.password = this.md5.encrypt(user.password);
+    } else {
+      user.password = data.password;
+    }
     await this.usersReporsitory.save(user);
   }
 

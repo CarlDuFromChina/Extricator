@@ -14,12 +14,9 @@
           <a-form-item name="password" label="密码" v-show="current === 0">
             <a-input-password v-model:value="formState.password" placeholder="请输入密码" @keyup.enter="next"></a-input-password>
           </a-form-item>
-          <a-form-item v-show="current === 1">设置Cookie</a-form-item>
-          <a-form-item label="掘金" v-show="current === 1">
-            <a-input v-model:value="formState.cookie.juejin"></a-input>
-          </a-form-item>
-          <a-form-item label="京东" v-show="current === 1">
-            <a-input v-model:value="formState.cookie.jd"></a-input>
+          <a-form-item v-show="current === 1">设置邮箱</a-form-item>
+          <a-form-item label="邮箱" v-show="current === 1">
+            <a-input v-model:value="formState.email"></a-input>
           </a-form-item>
           <a-result title="Great, we have done all the operations!" v-show="current === 2">
             <template #icon>
@@ -48,10 +45,7 @@ import http from '../utils/http';
 interface FormState {
   code: string;
   password: string;
-  cookie: {
-    juejin: string;
-    jd: string;
-  };
+  email: string;
 }
 
 export default defineComponent({
@@ -62,10 +56,7 @@ export default defineComponent({
     const formState: UnwrapRef<FormState> = reactive({
       code: '',
       password: '',
-      cookie: {
-        juejin: '',
-        jd: '',
-      },
+      email: '',
     });
     const rules = {
       code: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
@@ -98,7 +89,7 @@ export default defineComponent({
           title: '账号',
         },
         {
-          title: 'Cookie',
+          title: '邮箱',
         },
         {
           title: '完成',

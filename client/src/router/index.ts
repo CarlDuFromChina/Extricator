@@ -2,8 +2,8 @@ import { createRouter, RouteRecordRaw, createWebHistory } from "vue-router";
 import Home from '../views/home.vue';
 import Login from '../views/login.vue';
 import Register from '../views/register.vue';
-import Admin from '../views/admin.vue';
-import Signin from '../views/signin.vue';
+import Admin from '../views/admin/index.vue';
+import Signin from '../views/signin/signin.vue';
 import Doc from '../views/doc.vue';
 import store from "../store";
 

@@ -1,28 +1,27 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { AuthUser } from './user.decorator';
 import { User } from './user.entity';
 import { UserService } from './user.service';
 
 @Controller('user')
+@UseGuards(AuthGuard('jwt'))
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Put()
-  @UseGuards(AuthGuard('jwt'))
+  @Get('data')
+  getData(@AuthUser('code') code: string) {
+    return this.userService.getData(code);
+  }
+  
+  @Put('data')
   update(@Body() userDto: User) {
     this.userService.updateData(userDto);
   }
 
-  @Post()
-  @UseGuards(AuthGuard('jwt'))
+  @Post('data')
   create(@Body() createUserDto: User) {
     this.userService.createData(createUserDto);
-  }
-
-  @Get(':code')
-  @UseGuards(AuthGuard('jwt'))
-  findOne(@Param('code') code: string) {
-    return this.userService.getData(code);
   }
 
   @Delete(':id')

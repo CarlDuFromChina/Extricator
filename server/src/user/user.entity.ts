@@ -1,5 +1,4 @@
-import { Cookie } from "src/cookie/cookie.entity";
-import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryColumn } from "typeorm";
 
 @Entity()
 export class User {
@@ -9,7 +8,6 @@ export class User {
   @Column()
   password: string;
 
-  @OneToOne(() => Cookie)
-  @JoinColumn()
-  cookie: Cookie
+  @Column({ nullable: true })
+  email?: string;
 }

@@ -1,17 +1,21 @@
 import { HttpService } from "@nestjs/axios";
 import { Injectable } from "@nestjs/common";
 import { CheckInData } from "./interfaces/checkin-data.interface";
-import { UserService } from "src/user/user.service";
 import { JdResponse } from "./interfaces/jd-response.interface";
 import { CheckinRecord } from "src/checkin-record/checkin-record.entity";
 import { CheckinRecordService } from "src/checkin-record/checkin-record.service";
+import { Jd } from "./jd.entity";
+import { isEmpty } from "src/common/assert";
+import { Repository } from "typeorm";
+import { InjectRepository } from "@nestjs/typeorm";
 
 @Injectable()
 export class JdService {
   constructor(
     private httpService: HttpService,
-    private userService: UserService,
-    private readonly checkinRecordService: CheckinRecordService
+    private readonly checkinRecordService: CheckinRecordService,
+    @InjectRepository(Jd)
+    private readonly jdReporsitory: Repository<Jd>
   ) {}
 
   /**
@@ -20,10 +24,10 @@ export class JdService {
    * @returns 
    */
    private async getConfig(code: string) {
-    const user = await this.userService.getData(code);
+    const data = await this.jdReporsitory.findOne({ user_code: code });
     return {
       withCredentials: true,
-      headers: { cookie: user.cookie.jd }
+      headers: { cookie: data.cookie }
     };
   }
 
@@ -58,5 +62,34 @@ export class JdService {
     jdRecord.error_reason = result.errorMessage;
     this.checkinRecordService.createOrUpdateData(jdRecord);
     return result;
+  }
+
+  async getData(userCode: string) {
+    return this.jdReporsitory.findOne({ where: { user_code: userCode }});
+  }
+
+  async createData(data: Jd, userCode: string) {
+    if (!isEmpty(data.cookie)) {
+      var now = new Date();
+      now.setMonth(now.getMonth() + 1); // cookie过期时间为一个月
+      data.expired_at = now;
+    }
+    data.user_code = userCode;
+    this.jdReporsitory.insert(data);
+  }
+
+  async updateData(data: Jd, userCode: string) {
+    var _data = await this.jdReporsitory.findOne({ where: { user_code: userCode }});
+    if (!isEmpty(data.cookie)) {
+      if (_data.cookie !== data.cookie) {
+        var expireDate = new Date();
+        expireDate.setMonth(expireDate.getMonth() + 1); // 掘金cookie过期时间为一个月
+        data.expired_at = expireDate;
+      }
+    } else {
+      data.expired_at = null;
+    }
+    data.updated_at = new Date();
+    await this.jdReporsitory.save(data);
   }
 }

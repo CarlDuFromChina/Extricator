@@ -50,7 +50,7 @@ export class AuthService {
     assert.isSame(user.password, this.md5.encrypt(oldPass), '密码错误');
 
     user.password = newPass;
-    this.userService.updateData(user);
+    this.userService.updateData(user, true);
   }
 
   /**

@@ -8,8 +8,9 @@ import { UserModule } from './user/user.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TaskModule } from './task/task.module';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { CookieModule } from './cookie/cookie.module';
 import { CheckinRecordModule } from './checkin-record/checkin-record.module';
+import { ConfigModule } from '@nestjs/config';
+import { EmailModule } from './email/email.module';
 
 var dbConfig = {
   type: process.env.TYPEORM_CONNECTION || 'postgres',
@@ -33,8 +34,9 @@ var dbConfig = {
       autoLoadEntities: true,
       synchronize: true
     }),
-    CookieModule,
     CheckinRecordModule,
+    ConfigModule.forRoot({ isGlobal: true }),
+    EmailModule,
   ],
   controllers: [AppController],
   providers: [AppService],
