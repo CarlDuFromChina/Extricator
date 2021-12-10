@@ -10,4 +10,7 @@ export class User {
 
   @Column({ nullable: true })
   email?: string;
+
+  @Column({ default: false })
+  mail_verified?: boolean;
 }

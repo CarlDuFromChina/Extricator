@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import EncryptFactory, { IEncrypt, EncryptType } from '../common/encrypt';
 import assert from 'src/common/assert';
+import { EmailService } from 'src/email/email.service';
 
 @Injectable()
 export class UserService {
@@ -11,14 +12,15 @@ export class UserService {
   
   constructor(
     @InjectRepository(User)
-    private usersReporsitory: Repository<User>
+    private usersReporsitory: Repository<User>,
+    private emailService: EmailService
   ) {
     this.md5 = EncryptFactory.createInstance(EncryptType.md5);
   }
 
   async getData(code: string, withPwd: boolean = false): Promise<User> {
     var data = await this.usersReporsitory.findOne(code);
-    if (!withPwd) {
+    if (data && !withPwd) {
       data.password = null;
     }
     return data;
@@ -68,5 +70,16 @@ export class UserService {
     }
     var result = await this.usersReporsitory.delete(code);
     return result.affected > 0;
+  }
+
+  async verifyMail(id: string) {
+    var data = await this.emailService.verifyMail(id);
+    if (data && data.is_success) {
+      var user = await this.getData(data.user_code, false);
+      user.mail_verified = true;
+      await this.updateData(user, false);
+      return true;
+    }
+    return false;
   }
 }

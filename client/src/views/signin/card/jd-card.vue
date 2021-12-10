@@ -80,10 +80,12 @@ export default defineComponent({
 
     var refresh = () => {
       http.get(`/api/jd/data`).then((resp: any) => {
-        isCreate = false;
-        Object.assign(formState, resp);
-        if (!isEmpty(resp.cookie)) {
-          http.get('/api/jd/getTodayStatus').then(resp => jdChecked.value = resp as boolean);
+        if (resp) {
+          isCreate = false;
+          Object.assign(formState, resp);
+          if (!isEmpty(resp.cookie)) {
+            http.get('/api/jd/getTodayStatus').then(resp => jdChecked.value = resp as boolean);
+          }
         }
       });
     }

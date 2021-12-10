@@ -134,7 +134,7 @@ export default defineComponent({
   width: 48px;
   height: 48px;
   margin: 16px;
-  background: url('../assets/logo.png') no-repeat;
+  background: url('../../assets/logo.png') no-repeat;
   background-size: 48px 48px;
 }
 

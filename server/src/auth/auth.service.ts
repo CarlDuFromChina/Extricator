@@ -23,7 +23,7 @@ export class AuthService {
    * @returns User
    */
   async validate(code: string, password: string): Promise<User> {
-    const data = await this.userService.getData(code);
+    const data = await this.userService.getData(code, true);
     if (data == null) {
       return null;
     }
