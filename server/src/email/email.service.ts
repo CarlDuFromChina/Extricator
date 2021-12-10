@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { randomUUID } from 'crypto';
-import { SMTPClient } from 'emailjs';
+import { Message, SMTPClient } from 'emailjs';
 import { Repository } from 'typeorm';
 import { MailVertification } from './mail-vertification.entity';
 
@@ -43,20 +43,24 @@ export class EmailService {
     var url = `${this.configService.get('HOST')}/api/user/verify/${id}`;
     var now = new Date();
     now.setHours(now.getHours() + 2);
-    var message = `Hi, </br>请在两小时内点击该<a href="${url}">链接</a>完成验证`;
+    var content = `Hi, <br><br>请在两小时内点击该<a href="${url}">链接</a>完成验证`;
     var data = new MailVertification();
     data.user_code = user_code;
     data.id = id;
     data.to_mail = to;
-    data.content = message;
+    data.content = content;
     data.expired_time = now;
     data.is_success = false;
-    await this.client.sendAsync({
-      text: message,
+
+    var message = new Message({
+      text: content,
       from: this.configService.get('EMAIL_USER'),
       to: to,
-      subject: '验证邮箱'
-    } as any);
+      subject: '验证邮箱',
+      attachment: [{ data: content, alternative: true }]
+    });
+    await this.client.sendAsync(message);
+
     await this.mailVertificationReporsitory.insert(data);
   }
 

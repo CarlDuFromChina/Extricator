@@ -9,7 +9,8 @@ COPY . /home/node
 
 RUN npm config set registry https://registry.npm.taobao.org \
     && npm install \
-    && npm run build
+    && npm run build \
+    && npm prune --production
 
 FROM node:14-alpine
 
