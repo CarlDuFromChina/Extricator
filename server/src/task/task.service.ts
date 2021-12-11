@@ -28,7 +28,7 @@ export class TaskService {
             if (data.cookie && data.expired_at > new Date()) {
               await this.juejinService.checkin(user.code); // 签到
               // 签到成功消息通知
-              if (!isEmpty(user.email) && data.enable_success_notify) {
+              if (!isEmpty(user.email) && data.enable_success_notify && user.mail_verified) {
                 var message = 'Hi,</br>恭喜你，掘金自动签到成功！';
                 this.emailService.send(message, user.email, null, '自动签到消息通知');
               }
@@ -40,7 +40,7 @@ export class TaskService {
             }
           } catch (error) {
             // 签到失败消息通知
-            if (!isEmpty(user.email) && data.enable_error_notify) {
+            if (!isEmpty(user.email) && data.enable_error_notify && user.mail_verified) {
               var message = 'Hi,</br>很抱歉，掘金自动签到失败了';
               this.emailService.send(message, user.email, null, '自动签到消息通知');
             }
@@ -54,14 +54,14 @@ export class TaskService {
           if (data.cookie && data.expired_at > new Date()) {
             await this.jdService.checkin(user.code);
             // 签到成功消息通知
-            if (!isEmpty(user.email) && data.enable_success_notify) {
+            if (!isEmpty(user.email) && data.enable_success_notify && user.mail_verified) {
               var message = 'Hi,</br>恭喜你，京东自动签到成功！';
               this.emailService.send(message, user.email, null, '自动签到消息通知');
             }
           }
         } catch (error) {
           // 签到失败消息通知
-          if (!isEmpty(user.email) && data.enable_error_notify) {
+          if (!isEmpty(user.email) && data.enable_error_notify && user.mail_verified) {
             var message = 'Hi,</br>很抱歉，京东自动签到失败了';
             this.emailService.send(message, user.email, null, '自动签到消息通知');
           }
@@ -78,7 +78,7 @@ export class TaskService {
   checkExpiredCookie() {
     this.userService.getAllData().then(users => {
       users.forEach(async (user) => {
-        if (!isEmpty(user.email)) {
+        if (!isEmpty(user.email) && user.mail_verified) {
           // 掘金
           var juejin = await this.juejinService.getData(user.code);
           if (!isNil(juejin) && juejin.enable_cookie_expired_notify && juejin.expired_at) {

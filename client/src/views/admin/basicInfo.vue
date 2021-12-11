@@ -53,9 +53,9 @@
 </template>
 
 <script lang="ts">
-import { message, Modal } from 'ant-design-vue';
+import { Button, message, Modal, notification } from 'ant-design-vue';
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
-import { createVNode, defineComponent, reactive, ref, toRaw, UnwrapRef } from 'vue';
+import { createVNode, defineComponent, h, reactive, ref, toRaw, UnwrapRef } from 'vue';
 import http from '../../utils/http';
 
 interface FormState {
@@ -96,8 +96,28 @@ export default defineComponent({
         });
       });
     };
-    http.get('/api/user/data').then((resp) => {
+    http.get('/api/user/data').then((resp: any) => {
       Object.assign(formState, resp);
+      if (!formState.mail_verified) {
+        const key = `open${Date.now()}`;
+        notification['warning']({
+          message: '邮箱验证提醒',
+          description: '您的邮箱还没有验证，邮件通知功能暂时无法使用',
+          btn: h(
+            Button,
+            {
+              type: 'link',
+              size: 'small',
+              onClick: () => {
+                notification.close(key);
+                context.emit('update:visible', true);
+              },
+            },
+            '立即验证',
+          ),
+          key
+        });
+      }
     });
     const changePassword = () => {
       formRef.value.validate().then(() => {
