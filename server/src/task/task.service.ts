@@ -29,15 +29,15 @@ export class TaskService {
             await this.juejinService.checkin(user.code); // 签到
             // 签到成功消息通知
             if (!isEmpty(user.email) && data.enable_success_notify && user.mail_verified) {
-              var message = 'Hi,</br>恭喜你，掘金自动签到成功！';
-              this.emailService.send(message, user.email, null, '自动签到消息通知');
+              var message = 'Hi,<br><br>恭喜你，掘金自动签到成功！';
+              await this.emailService.send(message, user.email, '自动签到通知');
             }
           }
         } catch (error) {
           // 签到失败消息通知
           if (!isEmpty(user.email) && data.enable_error_notify && user.mail_verified) {
-            var message = 'Hi,</br>很抱歉，掘金自动签到失败了';
-            this.emailService.send(message, user.email, null, '自动签到消息通知');
+            var message = 'Hi,<br><br>很抱歉，掘金自动签到失败了';
+            await this.emailService.send(message, user.email, '自动签到通知');
           }
           this.logger.error(error);
         }
@@ -56,15 +56,15 @@ export class TaskService {
           await this.jdService.checkin(user.code);
           // 签到成功消息通知
           if (!isEmpty(user.email) && data.enable_success_notify && user.mail_verified) {
-            var message = 'Hi,</br>恭喜你，京东自动签到成功！';
-            this.emailService.send(message, user.email, null, '自动签到消息通知');
+            var message = 'Hi,<br><br>恭喜你，京东自动签到成功！';
+            await this.emailService.send(message, user.email, '自动签到通知');
           }
         }
       } catch (error) {
         // 签到失败消息通知
         if (!isEmpty(user.email) && data.enable_error_notify && user.mail_verified) {
-          var message = 'Hi,</br>很抱歉，京东自动签到失败了';
-          this.emailService.send(message, user.email, null, '自动签到消息通知');
+          var message = 'Hi,<br><br>很抱歉，京东自动签到失败了';
+          await this.emailService.send(message, user.email, '自动签到通知');
         }
         this.logger.error(error);
       }
@@ -84,8 +84,8 @@ export class TaskService {
         if (!isNil(juejin) && juejin.enable_cookie_expired_notify && juejin.expired_at) {
           juejin.expired_at.setDate(juejin.expired_at.getDay() - 1);
           if (juejin.expired_at < new Date()) {
-            var message = 'Hi,</br>您的掘金Cookie还有不到一天就过期了，请尽快更新！';
-            this.emailService.send(message, user.email, null, '自动签到——Cookie过期提醒');
+            var message = 'Hi,<br>您的掘金Cookie还有不到一天就过期了，请尽快更新！';
+            await this.emailService.send(message, user.email, 'Cookie过期提醒');
           }
         }
         // 京东
@@ -93,8 +93,8 @@ export class TaskService {
         if (!isNil(jd) && jd.enable_cookie_expired_notify && jd.expired_at) {
           jd.expired_at.setDate(jd.expired_at.getDay() - 1);
           if (jd.expired_at < new Date()) {
-            var message = 'Hi,</br>您的京东Cookie还有不到一天就过期了，请尽快更新！';
-            this.emailService.send(message, user.email, null, '自动签到——Cookie过期提醒');
+            var message = 'Hi,<br><br>您的京东Cookie还有不到一天就过期了，请尽快更新！';
+            await this.emailService.send(message, user.email, 'Cookie过期提醒');
           }
         }
       }

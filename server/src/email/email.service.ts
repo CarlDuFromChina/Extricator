@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { randomUUID } from 'crypto';
@@ -8,6 +8,8 @@ import { MailVertification } from './mail-vertification.entity';
 
 @Injectable()
 export class EmailService {
+  private readonly logger = new Logger(EmailService.name);
+
   constructor(
     private configService: ConfigService,
     @InjectRepository(MailVertification)
@@ -23,15 +25,27 @@ export class EmailService {
 
   private client: SMTPClient;
 
-  async send(text: string, to: string, cc: string, subject: string) {
-    const message = await this.client.sendAsync({
-      text: text,
-      from: this.configService.get('EMAIL_USER'),
-      to: to,
-      cc: cc,
-      subject: subject,
-    } as any);
-    return message;
+  /**
+   * 发送邮件
+   * @param text 文本消息(HTML)
+   * @param to 收件人
+   * @param subject 主题
+   * @returns 
+   */
+  async send(text: string, to: string, subject: string) {
+    try {
+      var message = new Message({
+        text: text,
+        from: this.configService.get('EMAIL_USER'),
+        to: to,
+        subject: subject,
+        attachment: [{ data: text, alternative: true }]
+      });
+      var resp = await this.client.sendAsync(message);
+      return resp;
+    } catch (error) {
+      this.logger.error(error);
+    }
   }
 
   /**
