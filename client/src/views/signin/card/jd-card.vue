@@ -1,8 +1,8 @@
 <template>
   <a-card :bordered="false">
     <a-row>
-      <a-col style="text-align: left" :span="4">
-        <sp-icon name="jd" size="36"></sp-icon>
+      <a-col style="text-align: left;" :span="4">
+        <sp-icon name="jd" size="36" color="#E6241A"></sp-icon>
       </a-col>
       <a-col :span="20">
         <p class="title">京东</p>

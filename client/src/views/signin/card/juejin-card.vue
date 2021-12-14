@@ -2,7 +2,7 @@
   <a-card :bordered="false">
     <a-row>
       <a-col style="text-align: left" :span="4">
-        <sp-icon name="juejin" size="36"></sp-icon>
+        <sp-icon name="juejin" size="36" color="#1e80ff"></sp-icon>
       </a-col>
       <a-col :span="20">
         <p class="title">掘金</p>
@@ -17,7 +17,7 @@
     </template>
     <a-modal v-model:visible="visible" title="设置" @ok="saveData">
       <a-alert
-        message="注意：Cookie 有效期大部分为一个月，请及时更新"
+        :message="'注意：Cookie 有效期大部分为一个月，请及时更新'"
         type="warning"
         style="margin-bottom: 12px"
         show-icon
