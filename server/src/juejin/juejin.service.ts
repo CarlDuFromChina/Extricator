@@ -3,7 +3,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CheckinRecord } from 'src/checkin-record/checkin-record.entity';
 import { CheckinRecordService } from 'src/checkin-record/checkin-record.service';
-import { isEmpty } from 'src/common/assert';
+import { isEmpty, isNil } from 'src/common/assert';
 import { Repository } from 'typeorm';
 import { CheckinCounts } from './interfaces/checkin-counts.interface';
 import { CheckInData } from './interfaces/checkin-data.interface';
@@ -34,16 +34,20 @@ export class JuejinService {
     };
   }
 
-  private handleReponse<T>(
+  private async handleReponse<T>(
     res: JuejinResponse<T>,
-    successCb?: Function,
-    errorCb?: Function,
+    resolve?: () => Promise<void>,
+    reject?: (msg: string) => Promise<void>,
   ) {
     if (res.err_no.toString() !== '0') {
-      errorCb && errorCb(res.err_msg);
+      if (reject) {
+        await reject(res.err_msg);
+      }
       throw new InternalServerErrorException(res.err_msg);
     }
-    successCb && successCb();
+    if (resolve) {
+      await resolve();
+    }
     return res.data;
   }
 
@@ -76,7 +80,7 @@ export class JuejinService {
   /**
    * 获取奖池
    * @param code 用户编号
-   * @returns 
+   * @returns
    */
   async getLotteryConfig(code: string): Promise<LotteryConfigData> {
     const config = await this.getConfig(code);
@@ -105,27 +109,43 @@ export class JuejinService {
    * @returns
    */
   async checkin(code: string) {
-    const config = await this.getConfig(code);
-    const result = await this.httpService
-      .post('growth_api/v1/check_in', null, config)
-      .toPromise();
+    var juejin = await this.getData(code);
     var juejinRecord = new CheckinRecord();
     juejinRecord.created_at = new Date();
     juejinRecord.platform = 'juejin';
     juejinRecord.platform_name = '掘金';
     juejinRecord.user_code = code;
-    return this.handleReponse(
+    var handleSuccess = async () => {
+      juejinRecord.status = true;
+      await this.checkinRecordService.createOrUpdateData(juejinRecord);
+    };
+    var handleFail = async (msg: string) => {
+      juejinRecord.status = false;
+      juejinRecord.error_reason = msg;
+      await this.checkinRecordService.createOrUpdateData(juejinRecord);
+    };
+    if (isNil(juejin)) {
+      throw new InternalServerErrorException('未找到该用户');
+    }
+    if (isEmpty(juejin.cookie)) {
+      throw new InternalServerErrorException('未设置Cookie');
+    }
+    if (juejin.expired_at > new Date()) {
+      await handleFail('用户Cookie已过期');
+      return null;
+    }
+
+    const config = await this.getConfig(code);
+    const result = await this.httpService
+      .post('growth_api/v1/check_in', null, config)
+      .toPromise();
+
+    var resp = await this.handleReponse(
       result.data as JuejinResponse<CheckInData>,
-      () => {
-        juejinRecord.status = true;
-        this.checkinRecordService.createOrUpdateData(juejinRecord);
-      },
-      (msg: string) => {
-        juejinRecord.status = false;
-        juejinRecord.error_reason = msg;
-        this.checkinRecordService.createOrUpdateData(juejinRecord);
-      },
+      handleSuccess,
+      handleFail,
     );
+    return resp;
   }
 
   /**
@@ -177,7 +197,7 @@ export class JuejinService {
   }
 
   async getData(userCode: string) {
-    return this.juejinReporsitory.findOne({ where: { user_code: userCode }});
+    return this.juejinReporsitory.findOne({ where: { user_code: userCode } });
   }
 
   async createData(data: Juejin, userCode: string) {
@@ -191,7 +211,9 @@ export class JuejinService {
   }
 
   async updateData(data: Juejin, userCode: string) {
-    var _data = await this.juejinReporsitory.findOne({ where: { user_code: userCode }});
+    var _data = await this.juejinReporsitory.findOne({
+      where: { user_code: userCode },
+    });
     if (!isEmpty(data.cookie)) {
       if (_data.cookie !== data.cookie) {
         var expireDate = new Date();

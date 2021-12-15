@@ -60,7 +60,7 @@ export class JdService {
     jdRecord.user_code = code;
     jdRecord.status = result.code === '0';
     jdRecord.error_reason = result.errorMessage;
-    this.checkinRecordService.createOrUpdateData(jdRecord);
+    await this.checkinRecordService.createOrUpdateData(jdRecord);
     return result;
   }
 

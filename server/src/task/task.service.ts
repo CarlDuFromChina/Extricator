@@ -23,15 +23,13 @@ export class TaskService {
     for (const user of users) {
       // 掘金
       var data = await this.juejinService.getData(user.code);
-      if (!isNil(data)) {
+      if (data && data.cookie) {
         try {
-          if (data.cookie && data.expired_at > new Date()) {
-            await this.juejinService.checkin(user.code); // 签到
-            // 签到成功消息通知
-            if (!isEmpty(user.email) && data.enable_success_notify && user.mail_verified) {
-              var message = 'Hi,<br><br>恭喜你，掘金自动签到成功！';
-              await this.emailService.send(message, user.email, '自动签到通知');
-            }
+          await this.juejinService.checkin(user.code); // 签到
+          // 签到成功消息通知
+          if (!isEmpty(user.email) && data.enable_success_notify && user.mail_verified) {
+            var message = 'Hi,<br><br>恭喜你，掘金自动签到成功！';
+            await this.emailService.send(message, user.email, '自动签到通知');
           }
         } catch (error) {
           // 签到失败消息通知
@@ -50,23 +48,23 @@ export class TaskService {
       }
 
       // 京东
-      try {
-        var data = await this.jdService.getData(user.code);
-        if (data.cookie && data.expired_at > new Date()) {
+      var data = await this.jdService.getData(user.code);
+      if (data && data.cookie) {
+        try {
           await this.jdService.checkin(user.code);
           // 签到成功消息通知
           if (!isEmpty(user.email) && data.enable_success_notify && user.mail_verified) {
             var message = 'Hi,<br><br>恭喜你，京东自动签到成功！';
             await this.emailService.send(message, user.email, '自动签到通知');
           }
+        } catch (error) {
+          // 签到失败消息通知
+          if (!isEmpty(user.email) && data.enable_error_notify && user.mail_verified) {
+            var message = 'Hi,<br><br>很抱歉，京东自动签到失败了';
+            await this.emailService.send(message, user.email, '自动签到通知');
+          }
+          this.logger.error(error);
         }
-      } catch (error) {
-        // 签到失败消息通知
-        if (!isEmpty(user.email) && data.enable_error_notify && user.mail_verified) {
-          var message = 'Hi,<br><br>很抱歉，京东自动签到失败了';
-          await this.emailService.send(message, user.email, '自动签到通知');
-        }
-        this.logger.error(error);
       }
     }
   }
