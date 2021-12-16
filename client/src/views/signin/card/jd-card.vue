@@ -99,7 +99,7 @@ export default defineComponent({
           message.error(result.errorMessage);
         } else {
           message.success('签到成功');
-          refresh();
+          window.location.reload();
         }
       });
     };

@@ -130,9 +130,9 @@ export class JuejinService {
     if (isEmpty(juejin.cookie)) {
       throw new InternalServerErrorException('未设置Cookie');
     }
-    if (juejin.expired_at > new Date()) {
+    if (juejin.expired_at < new Date()) {
       await handleFail('用户Cookie已过期');
-      return null;
+      throw new InternalServerErrorException('用户Cookie已过期');
     }
 
     const config = await this.getConfig(code);

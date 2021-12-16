@@ -18,7 +18,7 @@ export class TaskService {
   ) {}
 
   @Cron(CronExpression.EVERY_DAY_AT_1AM)
-  async handleCheckin() {
+  async checkin() {
     var users = await this.userService.getAllData();
     for (const user of users) {
       // 掘金

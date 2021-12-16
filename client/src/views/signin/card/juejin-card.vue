@@ -98,7 +98,7 @@ export default defineComponent({
     var checkin = () => {
       http.post('/api/juejin/checkin').then(() => {
         message.success('签到成功');
-        refresh();
+        window.location.reload();
       });
     };
     var draw = () => {
