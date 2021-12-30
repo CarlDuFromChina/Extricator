@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import assert, { isEmpty, isNil } from 'src/common/assert';
+import { isEmpty, isNil } from 'src/common/assert';
 import { EmailService } from 'src/email/email.service';
 import { JdService } from 'src/jd/jd.service';
 import { JuejinService } from 'src/juejin/juejin.service';
@@ -51,8 +51,7 @@ export class TaskService {
       var data = await this.jdService.getData(user.code);
       if (data && data.cookie) {
         try {
-          var result = await this.jdService.checkin(user.code);
-          assert.isTrue(result?.code !== '0', '京东签到失败：' + result.errorMessage);
+          await this.jdService.checkin(user.code);
           // 签到成功消息通知
           if (!isEmpty(user.email) && data.enable_success_notify && user.mail_verified) {
             var message = 'Hi,<br><br>恭喜你，京东自动签到成功！';
