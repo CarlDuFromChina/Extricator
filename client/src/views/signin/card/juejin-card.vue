@@ -15,7 +15,7 @@
       <a-button type="link" @click="allin" :disabled="!formState.cookie">梭哈</a-button>
       <a-button type="link" @click="visible = true">设置</a-button>
     </template>
-    <a-modal v-model:visible="visible" title="设置" @ok="saveData">
+    <a-modal v-model:visible="visible" title="设置" width="720px" @ok="saveData">
       <a-alert
         :message="'注意：Cookie 有效期大部分为一个月，请及时更新'"
         type="warning"

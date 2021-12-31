@@ -17,6 +17,7 @@
           type="email"
           @change="handleChanged"
           autocomplete="off"
+          allowClear
         >
           <template #addonAfter>
             <a-button
@@ -58,6 +59,8 @@ import { Button, message, Modal, notification } from 'ant-design-vue';
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { createVNode, defineComponent, h, reactive, ref, toRaw, UnwrapRef, watch } from 'vue';
 import http from '../../utils/http';
+import { RuleObject } from 'ant-design-vue/lib/form/interface';
+import { isEmpty } from '../../utils/assert';
 
 interface FormState {
   code: string;
@@ -88,6 +91,15 @@ export default defineComponent({
           type: 'email',
           message: '请输入正确的邮箱',
         },
+        {
+          validator: async (rule: RuleObject, value: string) => {
+            if (!isEmpty(value) && formState.mail_verified === false) {
+              return Promise.reject('邮箱必须验证');
+            }
+            return Promise.resolve();
+          },
+          trigger: 'change'
+        }
       ]
     });
     var verify = () => {

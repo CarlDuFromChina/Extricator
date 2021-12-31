@@ -62,7 +62,6 @@ export default defineComponent({
       formRef.value.validate().then(() => {
         http.post('/api/auth/login', toRaw(formState)).then((resp) => {
           if (!assert.isEmpty(resp)) {
-            message.success('登录成功');
             store.commit('setToken', resp);
             store.commit('setCurrentUser', formState.code);
             router.push('admin');
