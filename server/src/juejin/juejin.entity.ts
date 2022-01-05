@@ -39,6 +39,12 @@ export class Juejin {
   enable_cookie_expired_notify: boolean;
 
   /**
+   * 上次过期提醒时间
+   */
+  @Column({ nullable: true })
+  last_expiration_reminder_time?: Date;
+
+  /**
    * 更新时间
    */
   @Column({ default: new Date() })

@@ -5,6 +5,7 @@ import { EmailService } from 'src/email/email.service';
 import { JdService } from 'src/jd/jd.service';
 import { JuejinService } from 'src/juejin/juejin.service';
 import { UserService } from 'src/user/user.service';
+import dayjs from 'dayjs';
 
 @Injectable()
 export class TaskService {
@@ -80,19 +81,25 @@ export class TaskService {
         // 掘金
         var juejin = await this.juejinService.getData(user.code);
         if (!isNil(juejin) && juejin.enable_cookie_expired_notify && juejin.expired_at) {
-          juejin.expired_at.setDate(juejin.expired_at.getDay() - 1);
-          if (juejin.expired_at < new Date()) {
+          var isExpired = dayjs(juejin.expired_at).subtract(1, 'day').isBefore(dayjs());
+          var isNotifiedToday = isNil(juejin.last_expiration_reminder_time) || dayjs(juejin.last_expiration_reminder_time).isToday(); // 是否今天已经通知过了
+          if (isExpired && isNotifiedToday) {
             var message = 'Hi,<br>您的掘金Cookie还有不到一天就过期了，请尽快更新！';
             await this.emailService.send(message, user.email, 'Cookie过期提醒');
+            juejin.last_expiration_reminder_time = new Date();
+            await this.juejinService.updateData(juejin, user.code);
           }
         }
         // 京东
         var jd = await this.jdService.getData(user.code);
         if (!isNil(jd) && jd.enable_cookie_expired_notify && jd.expired_at) {
-          jd.expired_at.setDate(jd.expired_at.getDay() - 1);
+          var isExpired = dayjs(jd.expired_at).subtract(1, 'day').isBefore(dayjs());
+          var isNotifiedToday = isNil(jd.last_expiration_reminder_time) || dayjs(jd.last_expiration_reminder_time).isToday(); // 是否今天已经通知过了
           if (jd.expired_at < new Date()) {
             var message = 'Hi,<br><br>您的京东Cookie还有不到一天就过期了，请尽快更新！';
             await this.emailService.send(message, user.email, 'Cookie过期提醒');
+            jd.last_expiration_reminder_time = new Date();
+            await this.jdService.updateData(jd, user.code);
           }
         }
       }
