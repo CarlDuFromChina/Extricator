@@ -93,15 +93,18 @@ export default defineComponent({
         },
         {
           validator: async (rule: RuleObject, value: string) => {
-            if (!isEmpty(value) && formState.mail_verified === false) {
+            if (!isEmpty(value) && !(formState.email === oldData.email && oldData.mail_verified)) {
               return Promise.reject('邮箱必须验证');
             }
-            return Promise.resolve();
           },
           trigger: 'change'
         }
       ]
     });
+    var oldData: FormState;
+    watch(formState, (newVal) => {
+      formState.mail_verified = newVal.email === oldData?.email && oldData?.mail_verified;
+    })
     var verify = () => {
       formRef.value.validate().then(() => {
         http.post('/api/email/verify', toRaw(formState)).then(() => {
@@ -126,9 +129,10 @@ export default defineComponent({
       mailChanged.value = originEmail !== formState.email;
     };
 
-    http.get('/api/user/data').then((resp: any) => {
+    var fetch = async () => http.get('/api/user/data').then((resp: any) => {
       originEmail = resp.email;
       Object.assign(formState, resp);
+      oldData = resp as FormState;
       if (!formState.mail_verified) {
         const key = `open${Date.now()}`;
         notification['warning']({
@@ -150,11 +154,14 @@ export default defineComponent({
         });
       }
     });
+    fetch();
+
     const submit = () => {
       formRef.value.validate().then(() => {
         http.put('/api/user/data', toRaw(formState)).then(() => {
           message.success('更新成功');
           context.emit('update:visible', false);
+          fetch();
         });
       });
     };
