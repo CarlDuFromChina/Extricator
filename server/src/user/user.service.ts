@@ -76,6 +76,7 @@ export class UserService {
     var data = await this.emailService.verifyMail(id);
     if (data && data.is_success) {
       var user = await this.getData(data.user_code, false);
+      user.email = data.to_mail;
       user.mail_verified = true;
       await this.updateData(user, false);
       return true;

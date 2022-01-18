@@ -23,7 +23,7 @@
             <a-button
               type="link"
               size="small"
-              :disabled="formState.mail_verified && !mailChanged"
+              :disabled="(formState.mail_verified && !mailChanged) || !isEmail(formState.email)"
               @click="verify"
               >{{ formState.mail_verified && !mailChanged ? '已验证' : '验证' }}</a-button
             >
@@ -93,7 +93,7 @@ export default defineComponent({
         },
         {
           validator: async (rule: RuleObject, value: string) => {
-            if (!isEmpty(value) && !(formState.email === oldData.email && oldData.mail_verified)) {
+            if (!isEmpty(value) && !formState.mail_verified) {
               return Promise.reject('邮箱必须验证');
             }
           },
@@ -101,38 +101,40 @@ export default defineComponent({
         }
       ]
     });
-    var oldData: FormState;
-    watch(formState, (newVal) => {
-      formState.mail_verified = newVal.email === oldData?.email && oldData?.mail_verified;
-    })
+    var isEmail = (val: string) => !isEmpty(val) && /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/.test(val);
     var verify = () => {
-      formRef.value.validate().then(() => {
-        http.post('/api/email/verify', toRaw(formState)).then(() => {
-          Modal.confirm({
-            title: () => '确认?',
-            icon: () => createVNode(ExclamationCircleOutlined),
-            content: () => '是否完成邮箱验证？',
-            onOk() {
-              http.get('/api/user/data').then((resp) => {
-                Object.assign(formState, resp);
-              });
-            },
-            onCancel() {},
-          });
+      http.post('/api/email/verify', toRaw(formState)).then(() => {
+        Modal.confirm({
+          title: () => '确认?',
+          icon: () => createVNode(ExclamationCircleOutlined),
+          content: () => '是否完成邮箱验证？',
+          onOk() {
+            http.get('/api/user/data').then((resp: any) => {
+              if (resp.mail_verified) {
+                originEmail = resp.email;
+                formState.mail_verified = true;
+                handleChanged();
+                formRef.value.validate();
+              } else {
+                message.error('验证失败，请确认邮件验证成功');
+              }
+            });
+          },
+          onCancel() {},
         });
-      })
+      });
     };
 
     var originEmail = '';
     var mailChanged = ref(false);
     var handleChanged = () => {
       mailChanged.value = originEmail !== formState.email;
+      formState.mail_verified = originEmail === formState.email;
     };
 
     var fetch = async () => http.get('/api/user/data').then((resp: any) => {
       originEmail = resp.email;
       Object.assign(formState, resp);
-      oldData = resp as FormState;
       if (!formState.mail_verified) {
         const key = `open${Date.now()}`;
         notification['warning']({
@@ -173,6 +175,7 @@ export default defineComponent({
       formState,
       rulesRef,
       submit,
+      isEmail
     };
   },
 });
