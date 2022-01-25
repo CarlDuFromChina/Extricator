@@ -11,6 +11,9 @@
       <a-form-item label="用户名">
         <a-input v-model:value="formState.code" :disabled="true"> </a-input>
       </a-form-item>
+      <a-form-item label="手机号码" name="phone">
+        <a-input type="number" v-model:value="formState.phone"> </a-input>
+      </a-form-item>
       <a-form-item label="邮箱" name="email">
         <a-input
           v-model:value="formState.email"
@@ -29,6 +32,9 @@
             >
           </template>
         </a-input>
+      </a-form-item>
+      <a-form-item label="通知方式" name="notification_method">
+        <a-radio-group :options="NotificationMethodOptions" v-model:value="formState.notification_method" />
       </a-form-item>
     </a-form>
     <div
@@ -64,8 +70,10 @@ import { isEmpty } from '../../utils/assert';
 
 interface FormState {
   code: string;
+  phone: string;
   email: string;
   mail_verified: boolean;
+  notification_method: number;
 }
 
 export default defineComponent({
@@ -82,8 +90,10 @@ export default defineComponent({
     const formRef = ref();
     const formState: UnwrapRef<FormState> = reactive({
       code: '',
+      phone: '',
       email: '',
       mail_verified: false,
+      notification_method: 1
     });
     const rulesRef = reactive({
       email: [
@@ -93,8 +103,24 @@ export default defineComponent({
         },
         {
           validator: async (rule: RuleObject, value: string) => {
+            if (isEmpty(value) && formState.notification_method === 1) {
+              return Promise.reject('通知方式为邮箱时，邮箱必填');
+            }
             if (!isEmpty(value) && !formState.mail_verified) {
               return Promise.reject('邮箱必须验证');
+            }
+          },
+          trigger: 'change'
+        }
+      ],
+      phone: [
+        {
+          validator: async (rule: RuleObject, value: string) => {
+            if (isEmpty(value) && formState.notification_method === 0) {
+              return Promise.reject('通知方式为企业危险时，手机号码必填');
+            }
+            if (!isEmpty(value) && !isPhone(value)) {
+              return Promise.reject('请输入正确的手机号码');
             }
           },
           trigger: 'change'
@@ -102,6 +128,12 @@ export default defineComponent({
       ]
     });
     var isEmail = (val: string) => !isEmpty(val) && /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/.test(val);
+    var isPhone = (val: string) => !isEmpty(val) && /^1[3|4|5|7|8]\d{9}$/.test(val);
+    var NotificationMethodOptions = ref([
+      { label: '企业微信', value: 0 },
+      { label: '邮箱', value: 1 },
+    ]);
+
     var verify = () => {
       http.post('/api/email/verify', toRaw(formState)).then(() => {
         Modal.confirm({
@@ -135,7 +167,7 @@ export default defineComponent({
     var fetch = async () => http.get('/api/user/data').then((resp: any) => {
       originEmail = resp.email;
       Object.assign(formState, resp);
-      if (!formState.mail_verified) {
+      if (!formState.mail_verified && !isEmpty(formState.email) && formState.notification_method === 1) {
         const key = `open${Date.now()}`;
         notification['warning']({
           message: '邮箱验证提醒',
@@ -175,7 +207,8 @@ export default defineComponent({
       formState,
       rulesRef,
       submit,
-      isEmail
+      isEmail,
+      NotificationMethodOptions
     };
   },
 });
