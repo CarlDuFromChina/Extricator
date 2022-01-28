@@ -72,6 +72,11 @@ export class UserService {
     return result.affected > 0;
   }
 
+  /**
+   * 验证邮箱
+   * @param id
+   * @returns 
+   */
   async verifyMail(id: string) {
     var data = await this.emailService.verifyMail(id);
     if (data && data.is_success) {
