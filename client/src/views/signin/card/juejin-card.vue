@@ -67,6 +67,7 @@ import { isEmpty } from "../../../utils/assert";
 
 interface FormState {
   cookie: string;
+  auto_sign: boolean,
   enable_cookie_expire_notify: boolean;
   enable_error_notify: boolean;
   enable_success_notify: boolean;
@@ -78,6 +79,7 @@ export default defineComponent({
     const formRef = ref();
     const formState: UnwrapRef<FormState> = reactive({
       cookie: '',
+      auto_sign: true,
       enable_cookie_expire_notify: true,
       enable_error_notify: true,
       enable_success_notify: true,
