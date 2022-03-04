@@ -26,17 +26,17 @@ export class TaskService {
     var users = await this.userService.getAllData();
     for (const user of users) {
       // 掘金
-      var data = await this.juejinService.getData(user.code);
-      if (data && data.cookie) {
+      var juejinData = await this.juejinService.getData(user.code);
+      if (juejinData && juejinData.cookie && juejinData.auto_sign) {
         try {
           await this.juejinService.checkin(user.code); // 签到
           // 签到成功消息通知
-          if (data.enable_success_notify) {
+          if (juejinData.enable_success_notify) {
             await this.notify(user, '掘金自动签到成功', '自动签到通知');
           }
         } catch (error) {
           // 签到失败消息通知
-          if (data.enable_error_notify) {
+          if (juejinData.enable_error_notify) {
             await this.notify(user, '掘金自动签到失败', '自动签到通知');
           }
           this.logger.error(error);
@@ -50,17 +50,17 @@ export class TaskService {
       }
 
       // 京东
-      var data = await this.jdService.getData(user.code);
-      if (data && data.cookie) {
+      var jdData = await this.jdService.getData(user.code);
+      if (jdData && jdData.cookie && jdData.auto_sign) {
         try {
           await this.jdService.checkin(user.code);
           // 签到成功消息通知
-          if (data.enable_success_notify) {
+          if (jdData.enable_success_notify) {
             await this.notify(user, '京东自动签到成功', '自动签到通知');
           }
         } catch (error) {
           // 签到失败消息通知
-          if (data.enable_error_notify) {
+          if (jdData.enable_error_notify) {
             await this.notify(user, '京东自动签到失败', '自动签到通知');
           }
           this.logger.error(error);

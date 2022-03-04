@@ -21,6 +21,12 @@ export class Juejin {
   expired_at?: Date;
 
   /**
+   * 自动签到
+   */
+  @Column({ default: true })
+  auto_sign: boolean;
+
+  /**
    * 签到成功提醒
    */
   @Column({ default: true })

@@ -29,17 +29,22 @@
           </a-col>
         </a-row>
         <a-row>
-          <a-col :span="8">
+          <a-col :span="6">
+            <a-form-item label="自动签到">
+              <a-switch v-model:checked="formState.auto_sign" />
+            </a-form-item>
+          </a-col>
+          <a-col :span="6">
             <a-form-item label="成功提醒">
               <a-switch v-model:checked="formState.enable_success_notify" />
             </a-form-item>
           </a-col>
-          <a-col :span="8">
+          <a-col :span="6">
             <a-form-item label="异常提醒">
               <a-switch v-model:checked="formState.enable_error_notify" />
             </a-form-item>
           </a-col>
-          <a-col :span="8">
+          <a-col :span="6">
             <a-form-item label="Cookie过期提醒">
               <a-switch v-model:checked="formState.enable_cookie_expire_notify" />
             </a-form-item>
