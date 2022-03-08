@@ -48,7 +48,7 @@
           </a-col>
           <a-col :span="6">
             <a-form-item label="Cookie过期提醒">
-              <a-switch v-model:checked="formState.enable_cookie_expire_notify" />
+              <a-switch v-model:checked="formState.enable_cookie_expired_notify" />
             </a-form-item>
           </a-col>
         </a-row>
@@ -68,7 +68,7 @@ import { isEmpty } from "../../../utils/assert";
 interface FormState {
   cookie: string;
   auto_sign: boolean,
-  enable_cookie_expire_notify: boolean;
+  enable_cookie_expired_notify: boolean;
   enable_error_notify: boolean;
   enable_success_notify: boolean;
 }
@@ -80,7 +80,7 @@ export default defineComponent({
     const formState: UnwrapRef<FormState> = reactive({
       cookie: '',
       auto_sign: true,
-      enable_cookie_expire_notify: true,
+      enable_cookie_expired_notify: true,
       enable_error_notify: true,
       enable_success_notify: true,
     });
