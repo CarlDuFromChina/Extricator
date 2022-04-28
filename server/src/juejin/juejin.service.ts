@@ -136,6 +136,9 @@ export class JuejinService {
     }
 
     const config = await this.getConfig(code);
+
+    await this.query(code);
+
     const result = await this.httpService
       .post('growth_api/v1/check_in', null, config)
       .toPromise();
@@ -146,6 +149,21 @@ export class JuejinService {
       handleFail,
     );
     return resp;
+  }
+
+  async query(code: string) {
+    const config = await this.getConfig(code);
+    var param = {
+      client_type: 2608,
+      cursor: "0",
+      id_type: 2,
+      limit: 20,
+      sort_type: 300
+    };
+    var result = await this.httpService
+      .post('recommend_api/v1/article/recommend_all_feed?aid=2608&uuid=6980253040042001932', param, config)
+      .toPromise();
+    return result;
   }
 
   /**
