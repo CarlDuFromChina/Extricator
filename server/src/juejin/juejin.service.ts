@@ -10,6 +10,7 @@ import { CheckInData } from './interfaces/checkin-data.interface';
 import { DrawData } from './interfaces/draw-data.interface';
 import { JuejinResponse } from './interfaces/juejin-response.interface';
 import { LotteryConfigData } from './interfaces/lottery-config-data.interface';
+import { Award } from './interfaces/lottery.award.interface';
 import { Juejin } from './juejin.entity';
 
 @Injectable()
@@ -137,7 +138,7 @@ export class JuejinService {
 
     const config = await this.getConfig(code);
 
-    await this.query(code);
+    await this.queryArticles(code);
 
     const result = await this.httpService
       .post('growth_api/v1/check_in', null, config)
@@ -151,7 +152,12 @@ export class JuejinService {
     return resp;
   }
 
-  async query(code: string) {
+  /**
+   * 查询推荐文章
+   * @param code 用户编码
+   * @returns 
+   */
+  async queryArticles(code: string) {
     const config = await this.getConfig(code);
     var param = {
       client_type: 2608,
@@ -164,6 +170,40 @@ export class JuejinService {
       .post('recommend_api/v1/article/recommend_all_feed?aid=2608&uuid=6980253040042001932', param, config)
       .toPromise();
     return result;
+  }
+
+  /**
+   * 查询大奖获奖信息
+   * @param code 用户编码
+   * @returns 
+   */
+  async queryBigAward(code: string) {
+    const config = await this.getConfig(code);
+    var param = {
+      page_no: 1,
+      page_size: 5
+    };
+    var result = await this.httpService
+      .post('growth_api/v1/lottery_history/global_big?aid=2608&uuid=6897189016987272712', param, config)
+      .toPromise();
+    return this.handleReponse(result.data as JuejinResponse<Award>);
+  }
+
+  /**
+   * 围观大奖
+   * @param code 用户编码
+   * @returns 
+   */
+  async dipLucky(code: string) {
+    const config = await this.getConfig(code);
+    var awards = await this.queryBigAward(code);
+    var param = {
+      lottery_history_id: awards.lotteries[0].history_id // 获取第一个大奖信息id
+    };
+    var result = await this.httpService
+      .post('growth_api/v1/lottery_lucky/dip_lucky?aid=2608&uuid=6897189016987272712', param, config)
+      .toPromise();
+    return result.data as JuejinResponse<any>;
   }
 
   /**

@@ -47,6 +47,9 @@ export class TaskService {
         if (resp.free_count > 0) {
           this.juejinService.draw(user.code, 1);
         }
+
+        // 自动围观大奖信息
+        await this.juejinService.dipLucky(user.code);
       }
 
       // 京东
